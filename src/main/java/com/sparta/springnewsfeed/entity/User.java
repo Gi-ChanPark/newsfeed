@@ -40,6 +40,4 @@ public class User extends Timestamped{
     @OneToMany(mappedBy = "toUser")
     private List<Friend> toFriends = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Comment> comments = new ArrayList<>();
 }
