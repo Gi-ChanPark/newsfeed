@@ -1,9 +1,6 @@
 package com.sparta.springnewsfeed.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,11 +17,21 @@ public class Comment extends Timestamped {
     private  LocalDateTime createAt;
     private  LocalDateTime modifiedAt;
 
-    public Comment(Long id, String content, LocalDateTime createAt, LocalDateTime modifiedAt) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Post_id")
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "User_id")
+    private User user;
+
+    public Comment(Long id, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Post post, User user) {
         this.id = id;
         this.content = content;
         this.createAt = createAt;
         this.modifiedAt = modifiedAt;
+        this.post = post;
+        this.user = user;
     }
 
 }
