@@ -34,4 +34,8 @@ public class User extends Timestamped{
     // 게시물 목록
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
+
+    // 친구 목록
+    @OneToMany(mappedBy = "user")
+    private List<Friend> friends = new ArrayList<>();
 }
