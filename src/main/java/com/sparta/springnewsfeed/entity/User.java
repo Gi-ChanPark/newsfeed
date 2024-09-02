@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends Timestamped{
+public class User extends Timestamped {
 
     @Id
     @Column(name = "user_id")
@@ -29,7 +29,6 @@ public class User extends Timestamped{
 
     @Column(name = "introduce")
     private String introduce;
-
 
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
