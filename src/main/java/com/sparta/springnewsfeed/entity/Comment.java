@@ -21,7 +21,6 @@ public class Comment extends Timestamped {
     public Comment( String content, Post post) {
         this.content = content;
         this.post = post;
-
     }
 
     public void update(String content) {
