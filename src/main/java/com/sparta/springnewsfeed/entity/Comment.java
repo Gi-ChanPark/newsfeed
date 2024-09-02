@@ -18,11 +18,11 @@ public class Comment extends Timestamped {
     private  LocalDateTime modifiedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Post_id")
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "User_id")
+    @JoinColumn(name = "user_id")
     private User user;
 
     public Comment(Long id, String content, LocalDateTime createAt, LocalDateTime modifiedAt, Post post, User user) {
