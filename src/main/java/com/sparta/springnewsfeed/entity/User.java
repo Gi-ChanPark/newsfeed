@@ -31,11 +31,16 @@ public class User extends Timestamped{
     @Column(name = "introduce")
     private String introduce;
 
-    // 게시물 목록
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-    // 친구 목록
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "fromUser")
     private List<Friend> friends = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toUser")
+    private List<Friend> toFriends = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
 }
