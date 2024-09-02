@@ -18,15 +18,11 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
-    public Comment(Long id, String content, Post post, User user) {
-        this.id = id;
+    public Comment( String content, Post post) {
         this.content = content;
         this.post = post;
-        this.user = user;
+
     }
 
 }
