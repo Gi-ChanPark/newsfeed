@@ -1,25 +1,26 @@
 package com.sparta.springnewsfeed.entity;
 
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class User extends Timestamped{
-
+public class Post extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String email;
-    private String password;
-    private String nickname;
+    @Column(name = "title")
+    private String title;
 
-    private String introduce;
+    @Column(name = "content")
+    private String content;
+
+    @ManyToOne
+    private User user;
+
 }
