@@ -28,6 +28,12 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    @GetMapping("/mypost")
+    public ResponseEntity<PostResponseDto> findMyPosts(){
+        PostResponseDto responseDto = postService.findMyPost();
+        return null;
+    }
+
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto){
         PostResponseDto responseDto = postService.updateById(postId,requestDto);
