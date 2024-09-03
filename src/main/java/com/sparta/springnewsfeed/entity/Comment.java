@@ -18,11 +18,12 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "post_id")
     private Post post;
 
-
     public Comment( String content, Post post) {
         this.content = content;
         this.post = post;
-
     }
 
+    public void update(String content) {
+        this.content = content;
+    }
 }
