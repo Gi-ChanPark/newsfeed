@@ -34,7 +34,7 @@ public class UserService {
         // 비밀번호 암호화
         String encodedPassword = passwordEncoderUtil.encode(requestDto.getPassword());
 
-        User user = new User(requestDto.getEmail(), requestDto.getPassword(), requestDto.getNickname(), null);
+        User user = new User(requestDto.getEmail(), encodedPassword, requestDto.getNickname(), null);
         userRepository.save(user);
 
         return new UserSignupResponseDto(user.getId(), user.getEmail(), user.getNickname());
