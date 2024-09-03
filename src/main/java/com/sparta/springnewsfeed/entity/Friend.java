@@ -31,7 +31,7 @@ public class Friend {
         this.status = status;
     }
 
-    public Friend addRequest(User fromUser, User toUser, String status) {
+    public void addRequest(User fromUser, User toUser, String status) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.status = status;
