@@ -2,7 +2,6 @@ package com.sparta.springnewsfeed.service;
 
 import com.sparta.springnewsfeed.config.EmailAlreadyExistsException;
 import com.sparta.springnewsfeed.config.InvalidCredentialsException;
-import com.sparta.springnewsfeed.config.PasswordEncoderUtil;
 import com.sparta.springnewsfeed.dto.UserLoginRequestDto;
 import com.sparta.springnewsfeed.dto.UserLoginResponseDto;
 import com.sparta.springnewsfeed.dto.UserSignupRequestDto;
@@ -18,11 +17,9 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoderUtil passwordEncoderUtil;
 
     @Transactional
     public UserSignupResponseDto signup(UserSignupRequestDto requestDto) {
@@ -31,10 +28,7 @@ public class UserService {
             throw new EmailAlreadyExistsException("이미 사용중인 이메일입니다");
         }
 
-        // 비밀번호 암호화
-        String encodedPassword = passwordEncoderUtil.encode(requestDto.getPassword());
-
-        User user = new User(requestDto.getEmail(), encodedPassword, requestDto.getNickname(), null);
+        User user = new User(requestDto.getEmail(),requestDto.getPassword(), requestDto.getNickname(), null);
         userRepository.save(user);
 
         return new UserSignupResponseDto(user.getId(), user.getEmail(), user.getNickname());
@@ -45,7 +39,7 @@ public class UserService {
         Optional<User> userOptional = userRepository.findByEmail(requestDto.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (passwordEncoderUtil.matches(requestDto.getPassword(), user.getPassword())) {
+            if (requestDto.getPassword().equals(user.getPassword())) {
                 String token = generateToken(user);
                 return new UserLoginResponseDto(token, user.getEmail(), user.getNickname());
             }
