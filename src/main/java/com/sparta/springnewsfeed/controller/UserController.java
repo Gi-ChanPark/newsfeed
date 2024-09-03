@@ -1,6 +1,7 @@
 package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.dto.UserLoginRequestDto;
+import com.sparta.springnewsfeed.dto.UserLoginResponseDto;
 import com.sparta.springnewsfeed.dto.UserSignupRequestDto;
 import com.sparta.springnewsfeed.dto.UserSignupResponseDto;
 import com.sparta.springnewsfeed.service.UserService;
@@ -25,9 +26,9 @@ public class UserController {
     }
 
     @PostMapping("/users/login")
-    public ResponseEntity<String> login(@RequestBody UserLoginRequestDto requestDto) {
-        String token = userService.login(requestDto);
-        return ResponseEntity.ok(token);
+    public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
+        UserLoginResponseDto responseDto = userService.login(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
 }

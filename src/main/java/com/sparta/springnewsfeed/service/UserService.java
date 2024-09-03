@@ -4,12 +4,12 @@ import com.sparta.springnewsfeed.config.EmailAlreadyExistsException;
 import com.sparta.springnewsfeed.config.InvalidCredentialsException;
 import com.sparta.springnewsfeed.config.PasswordEncoderUtil;
 import com.sparta.springnewsfeed.dto.UserLoginRequestDto;
+import com.sparta.springnewsfeed.dto.UserLoginResponseDto;
 import com.sparta.springnewsfeed.dto.UserSignupRequestDto;
 import com.sparta.springnewsfeed.dto.UserSignupResponseDto;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +41,13 @@ public class UserService {
     }
 
     @Transactional
-    public String login(UserLoginRequestDto requestDto) {
+    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
         Optional<User> userOptional = userRepository.findByEmail(requestDto.getEmail());
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoderUtil.matches(requestDto.getPassword(), user.getPassword())) {
-                return generateToken(user);
+                String token = generateToken(user);
+                return new UserLoginResponseDto(token, user.getEmail(), user.getNickname());
             }
         }
         throw new InvalidCredentialsException("잘못된 이메일 또는 비밀번호입니다");
