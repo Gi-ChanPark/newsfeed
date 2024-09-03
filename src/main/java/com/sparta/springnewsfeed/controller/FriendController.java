@@ -16,7 +16,9 @@ public class FriendController {
 
     @PostMapping("/{userId}/friends")
     public ResponseEntity<String> FriendAddRequest(@PathVariable Long id, @RequestBody FriendAddRequest friendAddRequest){
-        friendService.friendAdd(id, friendAddRequest);
+        friendService.friendAddRequest(id, friendAddRequest);
         return ResponseEntity.ok("친구 추가 요청 성공");
     }
+
+
 }

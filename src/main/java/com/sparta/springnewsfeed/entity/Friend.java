@@ -1,6 +1,7 @@
 package com.sparta.springnewsfeed.entity;
 
 
+import com.sparta.springnewsfeed.FriendStatus;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,11 @@ public class Friend {
     private User toUser;
 
     @Column(length = 15)
-    private String status;
+    private FriendStatus status;
 
+    public void addRequest(User fromUser, User toUser, FriendStatus friendWaittingStatus) {
+        this.fromUser = fromUser;
+        this.toUser = toUser;
+        this.status = friendWaittingStatus;
+    }
 }
