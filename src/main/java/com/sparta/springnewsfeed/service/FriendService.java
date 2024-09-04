@@ -1,6 +1,7 @@
 package com.sparta.springnewsfeed.service;
 
 
+import com.sparta.springnewsfeed.FriendStatus;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.Friend;
 import com.sparta.springnewsfeed.entity.User;
@@ -23,29 +24,47 @@ public class FriendService {
     private final FriendRepository friendRepository;
     private final UserRepository userRepository;
 
-    private String friendWaitStatus = "WAITING";
-    private String friendAcceptStatus = "ACCEPTED";
-    private String friendRejectStatus = "REJECTED";
+    private final FriendStatus friendWaitStatus = FriendStatus.WAITING;
+    private final FriendStatus friendAcceptStatus = FriendStatus.ACCEPTED;
+    private final FriendStatus friendRejectStatus = FriendStatus.REJECTED;
 
 
 
     @Transactional
-    public void friendAddRequest(Long id, FriendAddRequest friendAddRequest) {
-        User fromUser = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        User toUser = userRepository.findByNickname(friendAddRequest.getNickname());
+    public void friendAddRequest(Long userId, FriendAddRequest friendAddRequest) {
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User Not Found"));
+        User toUser = userRepository.findByEmailAndNickname(friendAddRequest.getEmail(), friendAddRequest.getNickname());
+
+        if(fromUser.equals(toUser)){
+            log.error("FromUser and ToUser cannot be the same user");
+            throw new IllegalArgumentException("FromUser and ToUser cannot be the same user");
+        }
+
+        if(friendRepository.existsByToUser(fromUser) && friendRepository.existsByFromUser(toUser)){
+            log.error("Already Friend");
+            throw new IllegalArgumentException("Already Friend");
+        }
 
         if(toUser == null) {
             log.error("User Not Found");
-            throw new IllegalArgumentException("User Not Found");
+            throw new NullPointerException("User Not Found");
         }
+
+
+        Friend friend2 = friendRepository.findByFromUserAndToUser(fromUser, toUser);
+        if(friend2 != null && friend2.getStatus().equals(friendAcceptStatus)){
+            log.error("Friend Already");
+            throw new IllegalArgumentException("Friend Already");
+        }
+
 
         Friend friend = new Friend();
         friend.addRequest(fromUser, toUser, friendWaitStatus);
         friendRepository.save(friend);
     }
 
-    public List<FriendRequestListResponse> friendRquestList(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+    public List<FriendRequestListResponse> friendRequestList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User Not Found"));
         List<Friend> friendList = friendRepository.findAllByToUserAndStatus(user, friendWaitStatus);
 
         if(friendList.isEmpty()){
@@ -53,40 +72,37 @@ public class FriendService {
             throw new NoSuchElementException("Friend Request Not Found");
         }
 
-        List<FriendRequestListResponse> friendRequestListResponses = friendList.stream().map(friend ->
+        return friendList.stream().map(friend ->
                 FriendRequestListResponse.of(friend.getFromUser().getNickname())).toList();
-
-        return friendRequestListResponses;
     }
 
-    public UserSearchFriendResponse userSearchFriend(Long id, UserSearchFriendRequest request) {
-        User fromUser = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-        User searchUser = userRepository.findByNickname(request.getNickname());
-        if(searchUser == null){
-            throw new NullPointerException("User Not Found");
-        }
-
-        Friend friend = friendRepository.findByFromUserAndToUser(fromUser, searchUser);
-
-        if(friend == null){
-            throw new NullPointerException("Friend Not Found");
-        }else if(friend.getStatus().equals(friendWaitStatus)){
-            return UserSearchFriendResponse.nicknameSearchUser(friend.getToUser().getNickname(), "요청 보냄");
-        }else if(friend.getStatus().equals(friendAcceptStatus)){
-            return UserSearchFriendResponse.nicknameSearchUser(friend.getToUser().getNickname(), "친구");
-        }
-        return UserSearchFriendResponse.nicknameSearchUser(searchUser.getNickname(), "요청 가능");
-    }
+//    public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
+//        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+//        List<User> searchUser = userRepository.findByNickname(request.getNickname());
+//        if(searchUser.isEmpty()) {
+//            throw new NoSuchElementException("User Not Found");
+//        }
+//        List<Friend> friendList = new ArrayList<>();
+//        for (User user : searchUser) {
+//            friendList.add(friendRepository.findByFromUserAndToUser(fromUser, user));
+//        }
+//
+//
+//
+//    }
 
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("Friend Not Found"));
 
-        Friend friend = friendRepository.findByIdAndFromUser(friendId, user);
+        if(!friend.getFromUser().getId().equals(userId) && !friend.getToUser().getId().equals(userId)){
+            log.error("Not Friend User");
+            throw new IllegalArgumentException("Not Friend User");
+        }
 
-        if(friend == null){
-            log.error("Friend Not Found");
-            throw new NullPointerException("Friend Not Found");
+        if(friend.getStatus().equals(friendWaitStatus) || !friend.getStatus().equals(friendAcceptStatus)){
+            log.error("Not Friend");
+            throw new IllegalArgumentException("Not Friend");
         }
 
         friendRepository.delete(friend);
@@ -94,23 +110,23 @@ public class FriendService {
 
     @Transactional
     public String friendAcceptanceRejection(Long userId, Long friendId, FriendRequestStatus status) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("Friend Not Found"));
 
-        Friend friend = friendRepository.findByIdAndFromUserAndStatus(friendId, user, friendWaitStatus);
-
-        if(friend == null){
-            log.error("Friend Not Found WAITING");
-            throw new NullPointerException("Friend Not Found WAITING");
+        if(!friend.getToUser().getId().equals(userId)){
+            log.error("Not ToUser");
+            throw new IllegalArgumentException("Not ToUser");
         }
 
-        if(status.getStatus().equals(friendAcceptStatus)){
-            friend.FriendAcceptance(status.getStatus());
-            return "친구 요청 수락";
-        }else if(status.getStatus().equals(friendRejectStatus)){
-            friend.FriendRejection(status.getStatus());
-            friendRepository.delete(friend);
-            return "친구 요청 거절";
-        }
-        return "";
+            if (status.getStatus().equals(friendAcceptStatus)) {
+                friend.FriendAcceptance(status.getStatus());
+                return "친구 요청 수락";
+            } else if (status.getStatus().equals(friendRejectStatus)) {
+                friend.FriendRejection(status.getStatus());
+                friendRepository.delete(friend);
+                return "친구 요청 거절";
+            }
+
+            log.error("Invalid Friend Request Status");
+            throw new IllegalArgumentException("Invalid Friend Request Status");
     }
 }

@@ -1,8 +1,9 @@
 package com.sparta.springnewsfeed.dto;
 
+import com.sparta.springnewsfeed.FriendStatus;
 import lombok.Getter;
 
 @Getter
 public class FriendRequestStatus {
-    private String status;
+    private FriendStatus status;
 }

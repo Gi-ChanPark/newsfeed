@@ -1,6 +1,7 @@
 package com.sparta.springnewsfeed.entity;
 
 
+import com.sparta.springnewsfeed.FriendStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,26 +24,27 @@ public class Friend {
     private User toUser;
 
     @Column(length = 15)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private FriendStatus status;
 
-    private Friend(User fromUser, User toUser, String status){
+    private Friend(User fromUser, User toUser, FriendStatus status){
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.status = status;
     }
 
-    public void addRequest(User fromUser, User toUser, String status) {
+    public void addRequest(User fromUser, User toUser, FriendStatus status) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.status = status;
     }
 
 
-    public void FriendAcceptance(String status){
+    public void FriendAcceptance(FriendStatus status){
         this.status = status;
     }
 
-    public void FriendRejection(String status){
+    public void FriendRejection(FriendStatus status){
         this.status = status;
     }
 }
