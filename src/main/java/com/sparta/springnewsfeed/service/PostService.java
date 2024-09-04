@@ -88,7 +88,7 @@ public class PostService {
     }
 
     public Page<PostResponseDto> getNewsfeed(Long userId, int page) {
-        List<Long> friendIds = friendRepository.findFriends(String.valueOf(FriendStatus.ACCEPT), userId);
+        List<Long> friendIds = friendRepository.findFriends(String.valueOf(FriendStatus.ACCEPTED), userId);
 
         Pageable pageable = PageRequest.of(page, 10);
 
