@@ -63,5 +63,19 @@ public class UserService {
         return new UserPasswordUpdateResponseDto("비밀번호가 업데이트 되었습니다.", user.getEmail());
     }
 
+    @Transactional
+    public UserRequestDto getUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        return new UserRequestDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getCreatedAt() != null ? user.getCreatedAt().toString() : "생성일 없음",
+                user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : "업데이트일 없음",
+                user.getIntroduce()
+        );
+    }
+
 
 }
