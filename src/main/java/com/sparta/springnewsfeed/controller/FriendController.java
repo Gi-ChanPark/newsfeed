@@ -38,7 +38,7 @@ public class FriendController {
         return ResponseEntity.ok().body(userSearchFriendResponse);
     }
 
-    @PutMapping("/{userId}/friends/{friendId}")
+    @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<String> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId){
         friendService.deleteFriend(userId,friendId);
         return ResponseEntity.ok().body("친구 삭제 완료");
