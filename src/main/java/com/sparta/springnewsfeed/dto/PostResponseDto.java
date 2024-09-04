@@ -1,7 +1,9 @@
 package com.sparta.springnewsfeed.dto;
 
 import com.sparta.springnewsfeed.entity.Post;
+import lombok.Getter;
 
+@Getter
 public class PostResponseDto {
     private Long id;
     private String title;

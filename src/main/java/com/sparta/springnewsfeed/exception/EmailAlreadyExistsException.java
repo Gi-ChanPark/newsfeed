@@ -1,4 +1,4 @@
-package com.sparta.springnewsfeed.config;
+package com.sparta.springnewsfeed.exception;
 
 public class EmailAlreadyExistsException extends RuntimeException {
 

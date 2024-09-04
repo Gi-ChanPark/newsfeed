@@ -1,5 +1,7 @@
 package com.sparta.springnewsfeed.controller;
 
+import com.sparta.springnewsfeed.annotation.Auth;
+import com.sparta.springnewsfeed.dto.AuthUser;
 import com.sparta.springnewsfeed.dto.NewsfeedResponseDto;
 import com.sparta.springnewsfeed.service.NewsfeedService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +19,7 @@ public class NewsfeedController {
     }
 
     @GetMapping()
-    public NewsfeedResponseDto getNewsfeed(@RequestParam(name = "page") Long page){
+    public NewsfeedResponseDto getNewsfeed(@Auth AuthUser authUser, @RequestParam(name = "page") Long page){
         newsfeedService.getNewsfeed(page);
         return null;
     }
