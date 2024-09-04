@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -29,19 +31,19 @@ public class PostController {
     }
 
     @GetMapping("/mypost")
-    public ResponseEntity<PostResponseDto> findMyPosts(){
-        PostResponseDto responseDto = postService.findMyPost();
+    public ResponseEntity<List<PostResponseDto>> findMyPosts() {
+        List<PostResponseDto> responseDto = postService.findMyPost();
         return null;
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto){
-        PostResponseDto responseDto = postService.updateById(postId,requestDto);
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long postId, @RequestBody PostRequestDto requestDto) {
+        PostResponseDto responseDto = postService.updateById(postId, requestDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDto);
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId){
+    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
         postService.deleteById(postId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("ID : " + postId + " 게시물 삭제 완료");
     }
