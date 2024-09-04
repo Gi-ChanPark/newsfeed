@@ -1,5 +1,6 @@
 package com.sparta.springnewsfeed.repository;
 
+
 import com.sparta.springnewsfeed.FriendStatus;
 import com.sparta.springnewsfeed.entity.Friend;
 import com.sparta.springnewsfeed.entity.User;
@@ -17,4 +18,7 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     Boolean existsByFromUser(User fromUser);
 
+    @Query(value = "select f.toUser from Friend f " +
+        "where f.status = ? and f.fromUser = ?")
+    List<Long> findFriends(String status, Long userId);
 }
