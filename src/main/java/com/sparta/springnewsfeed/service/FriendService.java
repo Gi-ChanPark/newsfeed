@@ -91,6 +91,11 @@ public class FriendService {
             UserSearchFriendResponse response = new UserSearchFriendResponse();
             response.setNickname(user.getNickname());
 
+            if(request.getNickname().equals(user.getNickname())){
+                response.setState("본인");
+            }
+
+
             Friend friend = friendRepository.findByFromUserAndToUser(fromUser, user);
             if(friend != null) {
 
