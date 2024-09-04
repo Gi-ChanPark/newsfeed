@@ -18,7 +18,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "Sparta";
+    private static final String SECRET_KEY = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
@@ -40,8 +40,7 @@ public class JwtUtil {
     public String createToken(Long userId) {
         Date date = new Date();
 
-        return SECRET_KEY +
-                Jwts.builder()
+        return Jwts.builder()
                         .setSubject(String.valueOf(userId))
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
