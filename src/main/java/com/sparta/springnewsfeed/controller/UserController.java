@@ -13,24 +13,27 @@ public class UserController {
 
     private final UserService userService;
 
+    // 회원가입
     @PostMapping("/users/signup")
     public ResponseEntity<UserSignupResponseDto> signup(@RequestBody UserSignupRequestDto requestDto) {
         UserSignupResponseDto responseDto = userService.signup(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    // 로그인
     @PostMapping("/users/login")
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         UserLoginResponseDto responseDto = userService.login(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
+    // 비밀번호 수정
     @PutMapping("/users/{userId}")
-    public ResponseEntity<Void> updatePassword(@RequestHeader("Authorization") String token,
-                                               @PathVariable Long userId,
-                                               @RequestBody UserPasswordUpdateRequestDto requestDto) {
-        userService.updatePassword(token, requestDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@RequestHeader("Authorization") String token,
+                                                                        @PathVariable Long userId,
+                                                                        @RequestBody UserPasswordUpdateRequestDto requestDto) {
+        UserPasswordUpdateResponseDto responseDto = userService.updatePassword(token, requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
 }

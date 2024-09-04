@@ -47,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
+    public UserPasswordUpdateResponseDto updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
         Long userId = jwtUtil.validateTokenAndGetUserId(token);
         User user =userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -59,6 +59,8 @@ public class UserService {
         // 새 비밀번호 업데이트
         user.setPassword(requestDto.getNewPassword());
         userRepository.save(user);
+
+        return new UserPasswordUpdateResponseDto("비밀번호가 업데이트 되었습니다.", user.getEmail());
     }
 
 
