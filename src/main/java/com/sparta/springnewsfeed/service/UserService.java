@@ -64,7 +64,8 @@ public class UserService {
     }
 
     @Transactional
-    public UserRequestDto getUser(Long userId) {
+    public UserRequestDto getUser(String token) {
+        Long userId = jwtUtil.validateTokenAndGetUserId(token);
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         return new UserRequestDto(

@@ -46,8 +46,8 @@ public class UserController {
 
     // 유저 조회
     @GetMapping("/users")
-    public ResponseEntity<UserRequestDto> getUser(@PathVariable Long userId) {
-        UserRequestDto responseDto = userService.getUser(userId);
+    public ResponseEntity<UserRequestDto> getUser(@RequestHeader("Authorization") String token) {
+        UserRequestDto responseDto = userService.getUser(token);
         return ResponseEntity.ok(responseDto);
 
     }
