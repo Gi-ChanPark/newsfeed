@@ -31,12 +31,12 @@ public class FriendController {
     }
 
 
-//    @GetMapping("/{userId}/friends/search")
-//    public ResponseEntity<List<UserSearchFriendResponse>> searchFriend(@PathVariable Long userId, @RequestBody UserSearchFriendRequest request){
-//        List<UserSearchFriendResponse> usered = friendService.userSearchFriend(userId,request);
-//
-//        return ResponseEntity.ok().body(usered);
-//    }
+    @GetMapping("/{userId}/friends/search")
+    public ResponseEntity<List<UserSearchFriendResponse>> searchFriend(@PathVariable Long userId, @RequestBody UserSearchFriendRequest request){
+        List<UserSearchFriendResponse> usered = friendService.userSearchFriend(userId,request);
+
+        return ResponseEntity.ok().body(usered);
+    }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
     public ResponseEntity<String> deleteFriend(@PathVariable Long userId, @PathVariable Long friendId){

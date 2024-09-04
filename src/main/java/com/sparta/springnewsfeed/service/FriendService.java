@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -76,20 +77,49 @@ public class FriendService {
                 FriendRequestListResponse.of(friend.getFromUser().getNickname())).toList();
     }
 
-//    public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
-//        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
-//        List<User> searchUser = userRepository.findByNickname(request.getNickname());
-//        if(searchUser.isEmpty()) {
-//            throw new NoSuchElementException("User Not Found");
-//        }
-//        List<Friend> friendList = new ArrayList<>();
-//        for (User user : searchUser) {
-//            friendList.add(friendRepository.findByFromUserAndToUser(fromUser, user));
-//        }
-//
-//
-//
-//    }
+    public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+
+        List<User> searchUser = userRepository.findByNickname(request.getNickname());
+        if(searchUser.isEmpty()) {
+            throw new NoSuchElementException("Nickname Not Found");
+        }
+
+        List<UserSearchFriendResponse> responseList = new ArrayList<>();
+
+        for (User user : searchUser) {
+            UserSearchFriendResponse response = new UserSearchFriendResponse();
+            response.setNickname(user.getNickname());
+
+            Friend friend = friendRepository.findByFromUserAndToUser(fromUser, user);
+            if(friend != null) {
+
+                if(friend.getStatus().equals(friendAcceptStatus)) {
+                    response.setState("친구");
+                }else if(friend.getStatus().equals(friendWaitStatus)) {
+                    response.setState("요청 보냄");
+                }else {
+                    response.setState("친구 아님");
+                }
+            } else {
+
+                friend = friendRepository.findByFromUserAndToUser(user, fromUser);
+                if(friend != null){
+                    if(friend.getStatus().equals(friendAcceptStatus)){
+                        response.setState("친구");
+                    }else if(friend.getStatus().equals(friendWaitStatus)){
+                        response.setState("요청 받음");
+                    }else {
+                        response.setState("친구 아님");
+                    }
+                }
+            }
+
+            responseList.add(response);
+        }
+
+        return responseList;
+    }
 
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
