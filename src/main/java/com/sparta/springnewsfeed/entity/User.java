@@ -32,6 +32,7 @@ public class User extends Timestamped {
     @Column(name = "introduce")
     private String introduce;
 
+
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
@@ -40,7 +41,7 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy = "toUser")
     private List<Friend> toFriends = new ArrayList<>();
-    
+
     public User(String email, String password, String nickname, String introduce) {
         this.email = email;
         this.password = password;

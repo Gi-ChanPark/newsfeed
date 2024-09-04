@@ -18,7 +18,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "Sparta";
+    private static final String BEARER = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
 
     @Value("${jwt.secret.key}")
@@ -30,7 +30,8 @@ public class JwtUtil {
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
 
-        if (bytes.length < 32) { // HS256에 적합한 최소 키 길이 체크
+        if (bytes.length < 32) {// HS256에 적합한 최소 키 길이 체크
+            log.error("비밀 키의 길이가 너무 짧습니다. 최소 32바이트여야 합니다.");
             throw new IllegalArgumentException("비밀 키의 길이가 너무 짧습니다. 최소 32바이트여야 합니다.");
         }
 
@@ -40,7 +41,7 @@ public class JwtUtil {
     public String createToken(Long userId) {
         Date date = new Date();
 
-        return SECRET_KEY +
+        return BEARER +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
@@ -50,7 +51,7 @@ public class JwtUtil {
     }
 
     public String substringToken(String tokenValue) {
-        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(SECRET_KEY)) {
+        if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER)) {
             return tokenValue.substring(7);
         }
         log.error("Not Found Token");
