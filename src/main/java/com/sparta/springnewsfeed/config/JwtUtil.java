@@ -65,4 +65,9 @@ public class JwtUtil {
                 .getBody();
     }
 
+    public Long validateTokenAndGetUserId(String token) {
+        Claims claims = extractClaims(token);
+        return Long.valueOf(claims.getSubject());
+    }
+
 }

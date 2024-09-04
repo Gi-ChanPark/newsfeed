@@ -3,10 +3,7 @@ package com.sparta.springnewsfeed.service;
 import com.sparta.springnewsfeed.config.EmailAlreadyExistsException;
 import com.sparta.springnewsfeed.config.InvalidCredentialsException;
 import com.sparta.springnewsfeed.config.JwtUtil;
-import com.sparta.springnewsfeed.dto.UserLoginRequestDto;
-import com.sparta.springnewsfeed.dto.UserLoginResponseDto;
-import com.sparta.springnewsfeed.dto.UserSignupRequestDto;
-import com.sparta.springnewsfeed.dto.UserSignupResponseDto;
+import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,6 +44,21 @@ public class UserService {
             }
         }
         throw new InvalidCredentialsException("잘못된 이메일 또는 비밀번호입니다");
+    }
+
+    @Transactional
+    public void updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
+        Long userId = jwtUtil.validateTokenAndGetUserId(token);
+        User user =userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 기존 비밀번호 확인
+        if (!requestDto.getOldPassword().equals(user.getPassword())) {
+            throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 새 비밀번호 업데이트
+        user.setPassword(requestDto.getNewPassword());
+        userRepository.save(user);
     }
 
 

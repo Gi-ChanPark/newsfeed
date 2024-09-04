@@ -1,16 +1,10 @@
 package com.sparta.springnewsfeed.controller;
 
-import com.sparta.springnewsfeed.dto.UserLoginRequestDto;
-import com.sparta.springnewsfeed.dto.UserLoginResponseDto;
-import com.sparta.springnewsfeed.dto.UserSignupRequestDto;
-import com.sparta.springnewsfeed.dto.UserSignupResponseDto;
+import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +23,14 @@ public class UserController {
     public ResponseEntity<UserLoginResponseDto> login(@RequestBody UserLoginRequestDto requestDto) {
         UserLoginResponseDto responseDto = userService.login(requestDto);
         return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<Void> updatePassword(@RequestHeader("Authorization") String token,
+                                               @PathVariable Long userId,
+                                               @RequestBody UserPasswordUpdateRequestDto requestDto) {
+        userService.updatePassword(token, requestDto);
+        return ResponseEntity.ok().build();
     }
 
 }
