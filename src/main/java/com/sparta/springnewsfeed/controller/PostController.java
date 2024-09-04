@@ -1,5 +1,7 @@
 package com.sparta.springnewsfeed.controller;
 
+import com.sparta.springnewsfeed.annotation.Auth;
+import com.sparta.springnewsfeed.dto.AuthUser;
 import com.sparta.springnewsfeed.dto.PostRequestDto;
 import com.sparta.springnewsfeed.dto.PostResponseDto;
 import com.sparta.springnewsfeed.service.PostService;
@@ -19,8 +21,8 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto) {
-        PostResponseDto responseDto = postService.createPost(requestDto);
+    public ResponseEntity<PostResponseDto> createPost(@Auth AuthUser authUser, @RequestBody PostRequestDto requestDto) {
+        PostResponseDto responseDto = postService.createPost(requestDto,authUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -31,9 +33,9 @@ public class PostController {
     }
 
     @GetMapping("/mypost")
-    public ResponseEntity<List<PostResponseDto>> findMyPosts() {
-        List<PostResponseDto> responseDto = postService.findMyPost();
-        return null;
+    public ResponseEntity<List<PostResponseDto>> findMyPosts(@Auth AuthUser authUser) {
+        List<PostResponseDto> responseDtos = postService.findMyPost(authUser.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     @PutMapping("/{postId}")
@@ -43,8 +45,8 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<String> deletePost(@PathVariable Long postId) {
-        postService.deleteById(postId);
+    public ResponseEntity<String> deletePost(@Auth AuthUser authUser, @PathVariable Long postId) {
+        postService.deleteById(postId,authUser.getId());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("ID : " + postId + " 게시물 삭제 완료");
     }
 
