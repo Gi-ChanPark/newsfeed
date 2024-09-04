@@ -18,6 +18,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
+
     private static final String BEARER = "Bearer ";
     private static final long TOKEN_TIME = 60 * 60 * 1000L;
 
@@ -40,6 +41,7 @@ public class JwtUtil {
 
     public String createToken(Long userId) {
         Date date = new Date();
+
 
         return BEARER +
                 Jwts.builder()

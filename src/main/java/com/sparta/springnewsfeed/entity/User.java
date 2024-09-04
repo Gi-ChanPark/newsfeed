@@ -33,6 +33,7 @@ public class User extends Timestamped {
     private String introduce;
 
 
+    @Getter
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 

@@ -1,7 +1,7 @@
 package com.sparta.springnewsfeed.service;
 
-import com.sparta.springnewsfeed.config.EmailAlreadyExistsException;
-import com.sparta.springnewsfeed.config.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.EmailAlreadyExistsException;
+import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
 import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
