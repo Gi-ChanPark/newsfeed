@@ -47,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public void updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
+    public UserPasswordUpdateResponseDto updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
         Long userId = jwtUtil.validateTokenAndGetUserId(token);
         User user =userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
@@ -59,6 +59,23 @@ public class UserService {
         // 새 비밀번호 업데이트
         user.setPassword(requestDto.getNewPassword());
         userRepository.save(user);
+
+        return new UserPasswordUpdateResponseDto("비밀번호가 업데이트 되었습니다.", user.getEmail());
+    }
+
+    @Transactional
+    public UserRequestDto getUser(String token) {
+        Long userId = jwtUtil.validateTokenAndGetUserId(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        return new UserRequestDto(
+                user.getId(),
+                user.getEmail(),
+                user.getNickname(),
+                user.getCreatedAt() != null ? user.getCreatedAt().toString() : "생성일 없음",
+                user.getUpdatedAt() != null ? user.getUpdatedAt().toString() : "업데이트일 없음",
+                user.getIntroduce()
+        );
     }
 
 
