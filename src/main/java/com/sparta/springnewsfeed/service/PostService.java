@@ -1,13 +1,18 @@
 package com.sparta.springnewsfeed.service;
 
-import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.FriendStatus;
 import com.sparta.springnewsfeed.dto.PostRequestDto;
 import com.sparta.springnewsfeed.dto.PostResponseDto;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
+import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.repository.FriendRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,10 +22,12 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final FriendRepository friendRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, FriendRepository friendRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.friendRepository = friendRepository;
     }
 
     public PostResponseDto findById(Long postId) {
@@ -80,4 +87,12 @@ public class PostService {
         return postResponseDtos;
     }
 
+    public Page<PostResponseDto> getNewsfeed(Long userId, int page) {
+        List<Long> friendIds = friendRepository.findFriends(String.valueOf(FriendStatus.ACCEPT), userId);
+
+        Pageable pageable = PageRequest.of(page, 10);
+
+        Page<Post> newfeeds = postRepository.findPostsByIds(friendIds, pageable);
+        return newfeeds.map(PostResponseDto::new);
+    }
 }
