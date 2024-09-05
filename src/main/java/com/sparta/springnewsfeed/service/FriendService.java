@@ -42,9 +42,17 @@ public class FriendService {
         }
 
         if(friendRepository.existsByToUser(fromUser) && friendRepository.existsByFromUser(toUser)){
-            log.error("Already Friend");
-            throw new IllegalArgumentException("Already Friend");
+            Friend friend = friendRepository.findByFromUserAndToUser(toUser, fromUser);
+            if(friend.getStatus().equals(friendAcceptStatus)) {
+                log.error("Already Friend");
+                throw new IllegalArgumentException("Already Friend");
+            }else if(friend.getStatus().equals(friendWaitStatus)){
+                log.error("FromUser Send Friend Request");
+                throw new IllegalArgumentException("FromUser Send Friend Request");
+            }
         }
+
+
 
         if(toUser == null) {
             log.error("User Not Found");
@@ -53,9 +61,14 @@ public class FriendService {
 
 
         Friend friend2 = friendRepository.findByFromUserAndToUser(fromUser, toUser);
-        if(friend2 != null && friend2.getStatus().equals(friendAcceptStatus)){
-            log.error("Friend Already");
-            throw new IllegalArgumentException("Friend Already");
+        if(friend2 != null){
+            if(friend2.getStatus().equals(friendAcceptStatus)) {
+                log.error("Friend Already");
+                throw new IllegalArgumentException("Friend Already");
+            }else if(friend2.getStatus().equals(friendWaitStatus)){
+                log.error("Friend Request Send");
+                throw new IllegalArgumentException("Friend Request Send");
+            }
         }
 
 
@@ -92,7 +105,7 @@ public class FriendService {
             response.setNickname(user.getNickname());
 
             if(request.getNickname().equals(user.getNickname())){
-                response.setState("본인");
+                response.setState("My Profile");
             }
 
 
@@ -100,22 +113,22 @@ public class FriendService {
             if(friend != null) {
 
                 if(friend.getStatus().equals(friendAcceptStatus)) {
-                    response.setState("친구");
+                    response.setState("Friend");
                 }else if(friend.getStatus().equals(friendWaitStatus)) {
-                    response.setState("요청 보냄");
+                    response.setState("Send Request");
                 }else {
-                    response.setState("친구 아님");
+                    response.setState("Not Friend");
                 }
             } else {
 
                 friend = friendRepository.findByFromUserAndToUser(user, fromUser);
                 if(friend != null){
                     if(friend.getStatus().equals(friendAcceptStatus)){
-                        response.setState("친구");
+                        response.setState("Friend");
                     }else if(friend.getStatus().equals(friendWaitStatus)){
-                        response.setState("요청 받음");
+                        response.setState("Get Request");
                     }else {
-                        response.setState("친구 아님");
+                        response.setState("Not Friend");
                     }
                 }
             }

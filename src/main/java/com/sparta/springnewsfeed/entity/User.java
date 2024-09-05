@@ -32,6 +32,9 @@ public class User extends Timestamped {
     @Column(name = "introduce")
     private String introduce;
 
+    @Column(name = "is_deleted")
+    private boolean deleted = false;
+
 
     @Getter
     @OneToMany(mappedBy = "user")
@@ -49,5 +52,6 @@ public class User extends Timestamped {
         this.nickname = nickname;
         this.introduce = introduce;
     }
+
 }
 
