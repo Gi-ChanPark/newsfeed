@@ -48,5 +48,22 @@ public class    UserController {
 
     }
 
+    // 소개 수정
+    @PutMapping("/users/{userId}/profile")
+    public ResponseEntity<UserIntroduceUpdateResponseDto> updateIntroduce(@RequestHeader("Authorization") String token,
+                                                                          @PathVariable Long userId,
+                                                                          @RequestBody UserIntroduceUpdateRequestDto requestDto) {
+        UserIntroduceUpdateResponseDto responseDto = userService.updateIntroduce(token, userId, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token,
+                                             @PathVariable Long userId,
+                                             @RequestParam String enteredPassword) {
+        userService.deleteUser(token, userId, enteredPassword);
+        return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
+    }
 
 }
