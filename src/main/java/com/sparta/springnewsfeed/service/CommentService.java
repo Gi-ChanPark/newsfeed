@@ -23,7 +23,8 @@ public class CommentService {
     @Transactional
     public CommentSaveResponseDto saveComment(AuthUser authUser,Long postId, CommentSaveRequestDto commentSaveRequestDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NullPointerException("없는 게시물 입니다."));
-        Comment newComment = new Comment(commentSaveRequestDto.getContent(), post);
+        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new NullPointerException("사용자를 찾을수 없습니다."));
+        Comment newComment = new Comment(commentSaveRequestDto.getContent(), post, user);
         Comment savedComment = commentRepository.save(newComment);
         return new CommentSaveResponseDto(authUser, savedComment.getId(), savedComment.getContent());
     }
