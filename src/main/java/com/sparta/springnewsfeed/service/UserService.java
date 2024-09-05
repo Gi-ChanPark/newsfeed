@@ -78,5 +78,28 @@ public class UserService {
         );
     }
 
+    @Transactional
+    public UserIntroduceUpdateResponseDto updateIntroduce(String token, UserIntroduceUpdateRequestDto requestDto) {
+        Long userId = jwtUtil.validateTokenAndGetUserId(token);
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        user.setIntroduce(requestDto.getIntroduce());
+        userRepository.save(user);
+
+        return new UserIntroduceUpdateResponseDto("소개가 업데이트 되었습니다.", user.getEmail(), user.getIntroduce());
+    }
+
+    @Transactional
+    public void deleteUser(String token, Long userId) {
+        Long authUserId = jwtUtil.validateTokenAndGetUserId(token);
+
+        if (!authUserId.equals(userId)) {
+            throw new IllegalArgumentException("본인만 탈퇴할 수 있습니다.");
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        userRepository.delete(user);
+    }
+
 
 }
