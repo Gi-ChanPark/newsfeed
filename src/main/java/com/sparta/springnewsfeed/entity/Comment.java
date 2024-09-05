@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Comment extends Timestamped {
 
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private  Long id;
@@ -23,10 +22,9 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Comment( String content, Post post, User user) {
+    public Comment( String content, Post post) {
         this.content = content;
         this.post = post;
-        this.user = user;
     }
 
     public void update(String content) {
