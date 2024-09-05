@@ -55,9 +55,7 @@ public class UserService {
 
     // 비밀번호 수정
     @Transactional
-    public UserPasswordUpdateResponseDto updatePassword(String token, UserPasswordUpdateRequestDto requestDto) {
-        Long userId = jwtUtil.validateTokenAndGetUserId(token);
-        User user =userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+    public UserPasswordUpdateResponseDto updatePassword(User user, UserPasswordUpdateRequestDto requestDto) {
 
         // 기존 비밀번호 확인
         if (!passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword())) {
@@ -74,9 +72,7 @@ public class UserService {
 
     // 유저 조회
     @Transactional
-    public UserRequestDto getUser(String token) {
-        Long userId = jwtUtil.validateTokenAndGetUserId(token);
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+    public UserRequestDto getUser(User user) {
 
         return new UserRequestDto(
                 user.getId(),
@@ -90,14 +86,7 @@ public class UserService {
 
     // 소개 수정
     @Transactional
-    public UserIntroduceUpdateResponseDto updateIntroduce(String token, Long userId, UserIntroduceUpdateRequestDto requestDto) {
-        Long authenticatedUserId = jwtUtil.validateTokenAndGetUserId(token);
-
-        if (!authenticatedUserId.equals(userId)) {
-            throw new IllegalArgumentException("본인만 소개를 수정할 수 있습니다.");
-        }
-
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+    public UserIntroduceUpdateResponseDto updateIntroduce(User user, Long userId, UserIntroduceUpdateRequestDto requestDto) {
 
         // 비밀번호 체크
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
@@ -112,15 +101,7 @@ public class UserService {
 
     // 회원 탈퇴
     @Transactional
-    public void deleteUser(String token, Long userId, String enteredPassword) {
-        Long authUserId = jwtUtil.validateTokenAndGetUserId(token);
-
-        if (!authUserId.equals(userId)) {
-            throw new IllegalArgumentException("본인만 탈퇴할 수 있습니다.");
-        }
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+    public void deleteUser(User user, Long userId, String enteredPassword) {
 
         if (user.isDeleted()) {
             throw new IllegalArgumentException("이미 탈퇴한 사용자입니다.");
