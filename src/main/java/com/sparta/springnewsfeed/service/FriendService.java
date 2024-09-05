@@ -93,7 +93,7 @@ public class FriendService {
     public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
         User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
 
-        List<User> searchUser = userRepository.findByNickname(request.getNickname());
+        List<User> searchUser = userRepository.findByNicknameContaining(request.getNickname());
         if(searchUser.isEmpty()) {
             throw new NoSuchElementException("Nickname Not Found");
         }
@@ -106,6 +106,8 @@ public class FriendService {
 
             if(request.getNickname().equals(user.getNickname())){
                 response.setState("My Profile");
+            }else {
+                response.setState("Not Friend");
             }
 
 
@@ -120,7 +122,6 @@ public class FriendService {
                     response.setState("Not Friend");
                 }
             } else {
-
                 friend = friendRepository.findByFromUserAndToUser(user, fromUser);
                 if(friend != null){
                     if(friend.getStatus().equals(friendAcceptStatus)){
