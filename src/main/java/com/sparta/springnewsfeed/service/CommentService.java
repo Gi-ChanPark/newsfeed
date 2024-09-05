@@ -1,13 +1,13 @@
 package com.sparta.springnewsfeed.service;
 
-import com.sparta.springnewsfeed.dto.CommentSaveRequestDto;
-import com.sparta.springnewsfeed.dto.CommentSaveResponseDto;
-import com.sparta.springnewsfeed.dto.CommentUpdateRequstDto;
-import com.sparta.springnewsfeed.dto.CommentUpdateResponseDto;
+import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.Comment;
 import com.sparta.springnewsfeed.entity.Post;
+import com.sparta.springnewsfeed.entity.User;
+import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
 import com.sparta.springnewsfeed.repository.CommentRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
+import com.sparta.springnewsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CommentSaveResponseDto saveComment(Long postId, CommentSaveRequestDto commentSaveRequestDto) {
@@ -27,13 +28,23 @@ public class CommentService {
         return new CommentSaveResponseDto(savedComment.getId(), savedComment.getContent());
     }
     @Transactional
-    public CommentUpdateResponseDto updateComment(Long commentId, CommentUpdateRequstDto commentUpdateRequstDto) {
+    public CommentUpdateResponseDto updateComment(AuthUser authUser, Long commentId, CommentUpdateRequstDto commentUpdateRequstDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글입니다."));
+
+        if(!comment.getUser().equals(authUser.getId())){
+            throw new InvalidCredentialsException("권한이 없습니다.");
+        }
         comment.update(commentUpdateRequstDto.getContent());
-        return new CommentUpdateResponseDto(comment.getId(), comment.getContent());
+        return new CommentUpdateResponseDto(authUser, comment.getId(), comment.getContent());
     }
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(AuthUser authUser, Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글 입니다."));
+        User user = comment.getUser();
+        if (!user.getId().equals(authUser.getId())){
+            throw new InvalidCredentialsException("권한이 없습니다.");
+        }
+
         if(!commentRepository.existsById(commentId)){
             throw new NullPointerException("없는 댓글입니다.");
         }
