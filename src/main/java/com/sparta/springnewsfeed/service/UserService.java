@@ -4,10 +4,9 @@ import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.config.PasswordEncoder;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
-import com.sparta.springnewsfeed.exception.EmailAlreadyExistsException;
 import com.sparta.springnewsfeed.exception.ErrorCode;
-import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
-import com.sparta.springnewsfeed.exception.NicknameAlreadyExistException;
+import com.sparta.springnewsfeed.exception.custom.AlreadyExistException;
+import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,10 +29,10 @@ public class UserService {
     public UserSignupResponseDto signup(UserSignupRequestDto requestDto) {
         // email 중복체크
         if (userRepository.existsByEmail(requestDto.getEmail())) {
-            throw new EmailAlreadyExistsException("이미 사용중인 이메일입니다");
+            throw new AlreadyExistException(ErrorCode.EMAIL_DUPLICATED);
         }
         if (userRepository.existsByNickname(requestDto.getNickname())) {
-            throw new NicknameAlreadyExistException(ErrorCode.NICKNAME_DUPLICATED);
+            throw new AlreadyExistException(ErrorCode.NICKNAME_DUPLICATED);
         }
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());

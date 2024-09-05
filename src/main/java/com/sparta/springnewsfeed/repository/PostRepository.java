@@ -9,10 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Optional<List<Post>> findByUserId(Long userid);
+    List<Post> findByUserId(Long userid);
 
     Long findUserIdById(Long postId);
 

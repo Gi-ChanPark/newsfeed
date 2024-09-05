@@ -4,7 +4,7 @@ import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.Comment;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
-import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
 import com.sparta.springnewsfeed.repository.CommentRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;

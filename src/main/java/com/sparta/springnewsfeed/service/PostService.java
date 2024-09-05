@@ -6,7 +6,9 @@ import com.sparta.springnewsfeed.dto.PostResponseDto;
 import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
-import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.ErrorCode;
+import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.FriendRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
@@ -77,9 +79,10 @@ public class PostService {
     }
 
     public List<PostThumbnailResponseDto> findMyPosts(Long userId) {
-        List<Post> myPosts = postRepository.findByUserId(userId).orElseThrow(
-                () -> new NullPointerException("작성한 게시물이 없습니다.")
-        );
+        List<Post> myPosts = postRepository.findByUserId(userId);
+        if(myPosts.isEmpty()){
+            throw new NoEntityException(ErrorCode.POST_NOT_FOUND);
+        }
         List<PostThumbnailResponseDto> postResponseDtos = new ArrayList<>();
         for (Post post : myPosts) {
             PostThumbnailResponseDto postResponseDto = new PostThumbnailResponseDto(post);

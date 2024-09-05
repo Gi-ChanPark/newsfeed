@@ -1,4 +1,4 @@
-package com.sparta.springnewsfeed.exception;
+package com.sparta.springnewsfeed.exception.custom;
 
 public class InvalidCredentialsException extends RuntimeException {
 
