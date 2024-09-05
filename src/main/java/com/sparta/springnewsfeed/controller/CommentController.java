@@ -14,8 +14,8 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
-    public CommentSaveResponseDto saveComment( @PathVariable Long postId , @RequestBody CommentSaveRequestDto commentSaveRequestDto){
-        return commentService.saveComment(postId, commentSaveRequestDto);
+    public CommentSaveResponseDto saveComment(@Auth AuthUser authUser, @PathVariable Long postId , @RequestBody CommentSaveRequestDto commentSaveRequestDto){
+        return commentService.saveComment(authUser, postId, commentSaveRequestDto);
     }
 
     @PutMapping("/comments/{commentId}")
