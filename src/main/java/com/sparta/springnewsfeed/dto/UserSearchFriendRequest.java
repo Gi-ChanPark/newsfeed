@@ -7,5 +7,4 @@ public class UserSearchFriendRequest {
 
     private String nickname;
 
-
 }

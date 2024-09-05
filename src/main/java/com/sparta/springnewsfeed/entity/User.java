@@ -46,6 +46,9 @@ public class User extends Timestamped {
     @OneToMany(mappedBy = "toUser")
     private List<Friend> toFriends = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments = new ArrayList<>();
+
     public User(String email, String password, String nickname, String introduce) {
         this.email = email;
         this.password = password;
