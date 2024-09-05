@@ -6,11 +6,12 @@ import com.sparta.springnewsfeed.dto.PostResponseDto;
 import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
-import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.ErrorCode;
+import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.FriendRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ public class PostService {
 
     public PostResponseDto findById(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NullPointerException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         return new PostResponseDto(post);
     }
@@ -41,7 +42,7 @@ public class PostService {
     public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
         Post post = new Post(requestDto);
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new NullPointerException("삭제된 유저 입니다.")
+                () -> new NoEntityException(ErrorCode.USER_NOT_FOUND)
         );
         post.setUser(user);
         Post savePost = postRepository.save(post);
@@ -52,10 +53,10 @@ public class PostService {
 
     public PostResponseDto updateById(Long postId, PostRequestDto requestDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NullPointerException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         if (!post.getUser().getId().equals(userId)) {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
@@ -65,21 +66,22 @@ public class PostService {
 
     public void deleteById(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         User user = post.getUser();
         if (user.getId().equals(userId)) {
             user.getPosts().remove(post);
             postRepository.delete(post);
         } else {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
     }
 
     public List<PostThumbnailResponseDto> findMyPosts(Long userId) {
-        List<Post> myPosts = postRepository.findByUserId(userId).orElseThrow(
-                () -> new NullPointerException("작성한 게시물이 없습니다.")
-        );
+        List<Post> myPosts = postRepository.findByUserId(userId);
+        if(myPosts.isEmpty()){
+            throw new NoEntityException(ErrorCode.POST_NOT_FOUND);
+        }
         List<PostThumbnailResponseDto> postResponseDtos = new ArrayList<>();
         for (Post post : myPosts) {
             PostThumbnailResponseDto postResponseDto = new PostThumbnailResponseDto(post);
@@ -93,7 +95,7 @@ public class PostService {
         List<User> friends = friendRepository.findFriends(FriendStatus.ACCEPTED, userId);
         Pageable pageable = PageRequest.of(page, 10);
         if(friends.isEmpty()){
-            Page<Post> newsfeeds = postRepository.findAllByOrderByUpdatedAtDesc(pageable);
+            Page<Post> newsfeeds = postRepository.findAllByUserIdNotOrderByUpdatedAtDesc(userId,pageable);
             return newsfeeds.map(PostThumbnailResponseDto::new);
         }
 
