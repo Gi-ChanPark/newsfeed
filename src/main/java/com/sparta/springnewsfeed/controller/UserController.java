@@ -64,7 +64,7 @@ public class UserController {
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<String> deleteUser(@Auth AuthUser user,
                                              @PathVariable Long userId,
-                                             @RequestBody String enteredPassword) {
+                                             @RequestBody UserDeleteRequestDto requestDto) {
         userService.deleteUser(user.getId(), userId, enteredPassword);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
