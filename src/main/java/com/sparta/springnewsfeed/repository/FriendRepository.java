@@ -21,6 +21,6 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     Boolean existsByFromUser(User fromUser);
 
     @Query(value = "select f.toUser from Friend f " +
-        "where f.status = :status and f.fromUser = :id")
-    List<Long> findFriends(@Param("status") String status, @Param("id")Long userId);
+        "where f.status = :status and f.fromUser.id = :id")
+    List<User> findFriends(@Param("status") FriendStatus status, @Param("id")Long userId);
 }
