@@ -12,7 +12,6 @@ import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.FriendRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,10 +53,10 @@ public class PostService {
 
     public PostResponseDto updateById(Long postId, PostRequestDto requestDto, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NullPointerException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         if (!post.getUser().getId().equals(userId)) {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
         post.setTitle(requestDto.getTitle());
         post.setContent(requestDto.getContent());
@@ -67,14 +66,14 @@ public class PostService {
 
     public void deleteById(Long postId, Long userId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new EntityNotFoundException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         User user = post.getUser();
         if (user.getId().equals(userId)) {
             user.getPosts().remove(post);
             postRepository.delete(post);
         } else {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
     }
 

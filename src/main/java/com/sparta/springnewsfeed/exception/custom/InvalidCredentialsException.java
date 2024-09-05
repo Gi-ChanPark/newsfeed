@@ -1,8 +1,11 @@
 package com.sparta.springnewsfeed.exception.custom;
 
-public class InvalidCredentialsException extends RuntimeException {
+import com.sparta.springnewsfeed.exception.ErrorCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public InvalidCredentialsException(String message) {
-        super(message);
-    }
+@RequiredArgsConstructor
+@Getter
+public class InvalidCredentialsException extends RuntimeException {
+    private final ErrorCode errorCode;
 }

@@ -4,7 +4,9 @@ import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.Comment;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
+import com.sparta.springnewsfeed.exception.ErrorCode;
 import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.CommentRepository;
 import com.sparta.springnewsfeed.repository.PostRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
@@ -21,9 +23,9 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentSaveResponseDto saveComment(AuthUser authUser,Long postId, CommentSaveRequestDto commentSaveRequestDto) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new NullPointerException("없는 게시물 입니다."));
-        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new NullPointerException("사용자를 찾을수 없습니다."));
+    public CommentSaveResponseDto saveComment(AuthUser authUser, Long postId, CommentSaveRequestDto commentSaveRequestDto) {
+        Post post = postRepository.findById(postId).orElseThrow(() -> new NoEntityException(ErrorCode.POST_NOT_FOUND));
+        User user = userRepository.findById(authUser.getId()).orElseThrow(() -> new NoEntityException(ErrorCode.USER_NOT_FOUND));
         Comment newComment = new Comment(commentSaveRequestDto.getContent(), post, user);
         Comment savedComment = commentRepository.save(newComment);
         return new CommentSaveResponseDto(authUser, savedComment.getId(), savedComment.getContent());
@@ -31,10 +33,10 @@ public class CommentService {
 
     @Transactional
     public CommentUpdateResponseDto updateComment(AuthUser authUser, Long commentId, CommentUpdateRequstDto commentUpdateRequstDto) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글입니다."));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoEntityException(ErrorCode.COMMENT_NOT_FOUND));
 
         if (!comment.getUser().equals(authUser.getId())) {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
         comment.update(commentUpdateRequstDto.getContent());
         return new CommentUpdateResponseDto(authUser, comment.getId(), comment.getContent());
@@ -42,14 +44,14 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(AuthUser authUser, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글 입니다."));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoEntityException(ErrorCode.COMMENT_NOT_FOUND));
         User user = comment.getUser();
         if (!user.getId().equals(authUser.getId())) {
-            throw new InvalidCredentialsException("권한이 없습니다.");
+            throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
 
         if (!commentRepository.existsById(commentId)) {
-            throw new NullPointerException("없는 댓글입니다.");
+            throw new NoEntityException(ErrorCode.COMMENT_NOT_FOUND);
         }
         commentRepository.deleteById(commentId);
     }
