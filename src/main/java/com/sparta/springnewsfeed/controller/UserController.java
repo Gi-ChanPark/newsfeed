@@ -57,7 +57,7 @@ public class UserController {
     public ResponseEntity<UserIntroduceUpdateResponseDto> updateIntroduce(@RequestHeader("Authorization") String token,
                                                                           @PathVariable Long userId,
                                                                           @RequestBody UserIntroduceUpdateRequestDto requestDto) {
-        UserIntroduceUpdateResponseDto responseDto = userService.updateIntroduce(token, requestDto);
+        UserIntroduceUpdateResponseDto responseDto = userService.updateIntroduce(token, userId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

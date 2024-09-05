@@ -79,9 +79,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserIntroduceUpdateResponseDto updateIntroduce(String token, UserIntroduceUpdateRequestDto requestDto) {
-        Long userId = jwtUtil.validateTokenAndGetUserId(token);
+    public UserIntroduceUpdateResponseDto updateIntroduce(String token, Long userId, UserIntroduceUpdateRequestDto requestDto) {
+        Long authenticatedUserId = jwtUtil.validateTokenAndGetUserId(token);
+
+        if (!authenticatedUserId.equals(userId)) {
+            throw new IllegalArgumentException("본인만 소개를 수정할 수 있습니다.");
+        }
+
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        // 비밀번호 체크
+        if (!requestDto.getPassword().equals(user.getPassword())) {
+            throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
 
         user.setIntroduce(requestDto.getIntroduce());
         userRepository.save(user);
