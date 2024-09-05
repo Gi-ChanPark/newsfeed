@@ -21,11 +21,11 @@ public class CommentService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CommentSaveResponseDto saveComment(Long postId, CommentSaveRequestDto commentSaveRequestDto) {
+    public CommentSaveResponseDto saveComment(AuthUser authUser,Long postId, CommentSaveRequestDto commentSaveRequestDto) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new NullPointerException("없는 게시물 입니다."));
         Comment newComment = new Comment(commentSaveRequestDto.getContent(), post);
         Comment savedComment = commentRepository.save(newComment);
-        return new CommentSaveResponseDto(savedComment.getId(), savedComment.getContent());
+        return new CommentSaveResponseDto(authUser, savedComment.getId(), savedComment.getContent());
     }
 
     @Transactional
