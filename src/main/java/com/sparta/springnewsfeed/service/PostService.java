@@ -3,7 +3,6 @@ package com.sparta.springnewsfeed.service;
 import com.sparta.springnewsfeed.FriendStatus;
 import com.sparta.springnewsfeed.dto.PostRequestDto;
 import com.sparta.springnewsfeed.dto.PostResponseDto;
-import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
@@ -88,15 +87,12 @@ public class PostService {
         return postResponseDtos;
     }
 
-    public Page<PostThumbnailResponseDto> getNewsfeed(Long userId, int page) {
-        List<User> friends = friendRepository.findFriends(FriendStatus.ACCEPTED, userId);
-        Pageable pageable = PageRequest.of(page, 10);
-        if(friends.isEmpty()){
-            Page<Post> newsfeeds = postRepository.findAllByOrderByUpdatedAtDesc(pageable);
-            return newsfeeds.map(PostThumbnailResponseDto::new);
-        }
+    public Page<PostResponseDto> getNewsfeed(Long userId, int page) {
+        List<Long> friendIds = friendRepository.findFriends(String.valueOf(FriendStatus.ACCEPTED), userId);
 
-        Page<Post> newsfeeds = postRepository.findPostsByUsers(friends, pageable);
-        return newsfeeds.map(PostThumbnailResponseDto::new);
+        Pageable pageable = PageRequest.of(page, 10);
+
+        Page<Post> newfeeds = postRepository.findPostsByIds(friendIds, pageable);
+        return newfeeds.map(PostResponseDto::new);
     }
 }

@@ -7,7 +7,6 @@ import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,10 +55,8 @@ public class UserService {
 
     // 비밀번호 수정
     @Transactional
-    public UserPasswordUpdateResponseDto updatePassword(Long userId, UserPasswordUpdateRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("사용자가 없습니다.")
-        );
+    public UserPasswordUpdateResponseDto updatePassword(User user, UserPasswordUpdateRequestDto requestDto) {
+
         // 기존 비밀번호 확인
         if (!passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -75,10 +72,8 @@ public class UserService {
 
     // 유저 조회
     @Transactional
-    public UserRequestDto getUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("사용자가 없습니다.")
-        );
+    public UserRequestDto getUser(User user) {
+
         return new UserRequestDto(
                 user.getId(),
                 user.getEmail(),
@@ -91,10 +86,8 @@ public class UserService {
 
     // 소개 수정
     @Transactional
-    public UserIntroduceUpdateResponseDto updateIntroduce(Long authId, Long userId, UserIntroduceUpdateRequestDto requestDto) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("사용자가 없습니다.")
-        );
+    public UserIntroduceUpdateResponseDto updateIntroduce(User user, Long userId, UserIntroduceUpdateRequestDto requestDto) {
+
         // 비밀번호 체크
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
@@ -108,23 +101,18 @@ public class UserService {
 
     // 회원 탈퇴
     @Transactional
-    public void deleteUser(Long authUserId, Long userId, String enteredPassword) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("사용자가 없습니다.")
-        );
-        if (!userId.equals(authUserId)) {
-            throw new InvalidCredentialsException("삭제 권한이 없는 사용자입니다.");
-        }
+    public void deleteUser(User user, Long userId, String enteredPassword) {
+
         if (user.isDeleted()) {
             throw new IllegalArgumentException("이미 탈퇴한 사용자입니다.");
         }
+
         if (!passwordEncoder.matches(enteredPassword, user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
         user.setDeleted(true);
         userRepository.save(user);
-
     }
 
 }

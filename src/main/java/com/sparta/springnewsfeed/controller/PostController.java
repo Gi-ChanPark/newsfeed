@@ -41,7 +41,7 @@ public class PostController {
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponseDto> updatePost(@Auth AuthUser authUser, @PathVariable Long postId, @RequestBody PostRequestDto requestDto) {
         PostResponseDto responseDto = postService.updateById(postId, requestDto, authUser.getId());
-        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDto);
     }
 
     @DeleteMapping("/{postId}")
@@ -49,7 +49,7 @@ public class PostController {
         postService.deleteById(postId, authUser.getId());
         StringBuilder message = new StringBuilder();
         message.append("ID : ").append(postId).append(" 게시물 삭제 완료");
-        return ResponseEntity.status(HttpStatus.OK).body(message.toString());
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(message.toString());
     }
 
 }
