@@ -22,4 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Page<Post> findPostsByUsers(@Param("friends") List<User> friends, Pageable pageable);
 
     Page<Post> findAllByOrderByUpdatedAtDesc(Pageable pageable);
+
 }
+
