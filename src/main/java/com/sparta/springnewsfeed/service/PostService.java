@@ -76,17 +76,18 @@ public class PostService {
         }
     }
 
-    public List<PostResponseDto> findMyPost(Long userId) {
+    public List<PostThumbnailResponseDto> findMyPosts(Long userId) {
         List<Post> myPosts = postRepository.findByUserId(userId).orElseThrow(
                 () -> new NullPointerException("작성한 게시물이 없습니다.")
         );
-        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        List<PostThumbnailResponseDto> postResponseDtos = new ArrayList<>();
         for (Post post : myPosts) {
-            PostResponseDto postResponseDto = new PostResponseDto(post);
+            PostThumbnailResponseDto postResponseDto = new PostThumbnailResponseDto(post);
             postResponseDtos.add(postResponseDto);
         }
         return postResponseDtos;
     }
+
 
     public Page<PostThumbnailResponseDto> getNewsfeed(Long userId, int page) {
         List<User> friends = friendRepository.findFriends(FriendStatus.ACCEPTED, userId);
