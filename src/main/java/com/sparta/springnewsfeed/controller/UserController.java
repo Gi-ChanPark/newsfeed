@@ -63,10 +63,11 @@ public class UserController {
 
     // 회원 탈퇴
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token, @PathVariable Long userId) {
-        userService.deleteUser(token, userId);
+    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token,
+                                             @PathVariable Long userId,
+                                             @RequestParam String enteredPassword) {
+        userService.deleteUser(token, userId, enteredPassword);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
-
 
 }
