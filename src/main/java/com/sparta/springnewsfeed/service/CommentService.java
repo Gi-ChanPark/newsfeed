@@ -35,7 +35,7 @@ public class CommentService {
     public CommentUpdateResponseDto updateComment(AuthUser authUser, Long commentId, CommentUpdateRequstDto commentUpdateRequstDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NoEntityException(ErrorCode.COMMENT_NOT_FOUND));
 
-        if (!comment.getUser().equals(authUser.getId())) {
+        if (!comment.getUser().getId().equals(authUser.getId())) {
             throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
         comment.update(commentUpdateRequstDto.getContent());

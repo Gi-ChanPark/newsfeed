@@ -20,7 +20,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "order by p.updatedAt desc ")
     Page<Post> findPostsByUsers(@Param("friends") List<User> friends, Pageable pageable);
 
-    Page<Post> findAllByOrderByUpdatedAtDesc(Pageable pageable);
-
+    Page<Post> findAllByUserIdNotOrderByUpdatedAtDesc(Long userId, Pageable pageable);
 }
 

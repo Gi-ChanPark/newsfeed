@@ -9,7 +9,6 @@ import com.sparta.springnewsfeed.exception.custom.AlreadyExistException;
 import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
 import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +103,7 @@ public class UserService {
             throw new InvalidCredentialsException(ErrorCode.USER_NOT_MATCH);
         }
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new EntityNotFoundException("사용자가 없습니다.")
+                () -> new NoEntityException(ErrorCode.USER_NOT_FOUND)
         );
         // 비밀번호 체크
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
@@ -130,7 +129,7 @@ public class UserService {
             throw new IllegalArgumentException("이미 탈퇴한 사용자입니다.");
         }
         if (!passwordEncoder.matches(enteredPassword, user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new InvalidCredentialsException(ErrorCode.INVALID_EMAIL_PASSWORD);
         }
 
         user.setDeleted(true);

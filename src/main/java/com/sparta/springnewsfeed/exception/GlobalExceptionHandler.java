@@ -3,6 +3,7 @@ package com.sparta.springnewsfeed.exception;
 import com.sparta.springnewsfeed.exception.custom.AlreadyExistException;
 import com.sparta.springnewsfeed.exception.custom.InvalidCredentialsException;
 import com.sparta.springnewsfeed.exception.custom.NoEntityException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,5 +24,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoEntityException.class)
     public ResponseEntity<String> handleNoEntityException(NoEntityException e) {
         return new ResponseEntity<>(e.getErrorCode().getMessage(), e.getErrorCode().getHttpStatus());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

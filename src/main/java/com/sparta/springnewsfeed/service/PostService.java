@@ -34,7 +34,7 @@ public class PostService {
 
     public PostResponseDto findById(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new NullPointerException("해당 게시물이 존재하지 않습니다.")
+                () -> new NoEntityException(ErrorCode.POST_NOT_FOUND)
         );
         return new PostResponseDto(post);
     }
@@ -42,7 +42,7 @@ public class PostService {
     public PostResponseDto createPost(PostRequestDto requestDto, Long userId) {
         Post post = new Post(requestDto);
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new NullPointerException("삭제된 유저 입니다.")
+                () -> new NoEntityException(ErrorCode.USER_NOT_FOUND)
         );
         post.setUser(user);
         Post savePost = postRepository.save(post);
@@ -95,7 +95,7 @@ public class PostService {
         List<User> friends = friendRepository.findFriends(FriendStatus.ACCEPTED, userId);
         Pageable pageable = PageRequest.of(page, 10);
         if(friends.isEmpty()){
-            Page<Post> newsfeeds = postRepository.findAllByOrderByUpdatedAtDesc(pageable);
+            Page<Post> newsfeeds = postRepository.findAllByUserIdNotOrderByUpdatedAtDesc(userId,pageable);
             return newsfeeds.map(PostThumbnailResponseDto::new);
         }
 
