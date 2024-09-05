@@ -15,4 +15,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity handleEmailAlreadyExistsException(EmailAlreadyExistsException e){
         return null;
     }
+
+    @ExceptionHandler(NicknameAlreadyExistException.class)
+    public ResponseEntity handleNicknameAlreadyExistException(NicknameAlreadyExistException e){
+        return null;
+    }
 }

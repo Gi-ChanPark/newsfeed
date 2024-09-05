@@ -5,7 +5,9 @@ import com.sparta.springnewsfeed.config.PasswordEncoder;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.exception.EmailAlreadyExistsException;
+import com.sparta.springnewsfeed.exception.ErrorCode;
 import com.sparta.springnewsfeed.exception.InvalidCredentialsException;
+import com.sparta.springnewsfeed.exception.NicknameAlreadyExistException;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +32,9 @@ public class UserService {
         if (userRepository.existsByEmail(requestDto.getEmail())) {
             throw new EmailAlreadyExistsException("이미 사용중인 이메일입니다");
         }
-
+        if (userRepository.existsByNickname(requestDto.getNickname())) {
+            throw new NicknameAlreadyExistException(ErrorCode.NICKNAME_DUPLICATED);
+        }
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
@@ -47,7 +51,7 @@ public class UserService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-                String token = jwtUtil.createToken(user.getId(),user.getEmail());
+                String token = jwtUtil.createToken(user.getId(), user.getEmail());
                 return new UserLoginResponseDto(token, user.getEmail(), user.getNickname());
             }
         }
@@ -57,7 +61,7 @@ public class UserService {
     // 비밀번호 수정
     @Transactional
     public UserPasswordUpdateResponseDto updatePassword(Long authUserId, Long userId, UserPasswordUpdateRequestDto requestDto) {
-        if(!userId.equals(authUserId)){
+        if (!userId.equals(authUserId)) {
             throw new InvalidCredentialsException("권한이 없습니다.");
         }
         User user = userRepository.findById(userId).orElseThrow(
@@ -65,7 +69,7 @@ public class UserService {
         );
         //권한 체크
         String oldPassword = requestDto.getOldPassword();
-        if(!passwordEncoder.matches(oldPassword,user.getPassword())){
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
         }
         // 새 비밀번호 업데이트
@@ -96,7 +100,7 @@ public class UserService {
     @Transactional
     public UserIntroduceUpdateResponseDto updateIntroduce(Long authUserId, Long userId, UserIntroduceUpdateRequestDto
             requestDto) {
-        if(!userId.equals(authUserId)){
+        if (!userId.equals(authUserId)) {
             throw new InvalidCredentialsException("권한이 없습니다.");
         }
         User user = userRepository.findById(userId).orElseThrow(
