@@ -27,25 +27,27 @@ public class CommentService {
         Comment savedComment = commentRepository.save(newComment);
         return new CommentSaveResponseDto(savedComment.getId(), savedComment.getContent());
     }
+
     @Transactional
     public CommentUpdateResponseDto updateComment(AuthUser authUser, Long commentId, CommentUpdateRequstDto commentUpdateRequstDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글입니다."));
 
-        if(!comment.getUser().equals(authUser.getId())){
+        if (!comment.getUser().equals(authUser.getId())) {
             throw new InvalidCredentialsException("권한이 없습니다.");
         }
         comment.update(commentUpdateRequstDto.getContent());
         return new CommentUpdateResponseDto(authUser, comment.getId(), comment.getContent());
     }
+
     @Transactional
     public void deleteComment(AuthUser authUser, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("없는 댓글 입니다."));
         User user = comment.getUser();
-        if (!user.getId().equals(authUser.getId())){
+        if (!user.getId().equals(authUser.getId())) {
             throw new InvalidCredentialsException("권한이 없습니다.");
         }
 
-        if(!commentRepository.existsById(commentId)){
+        if (!commentRepository.existsById(commentId)) {
             throw new NullPointerException("없는 댓글입니다.");
         }
         commentRepository.deleteById(commentId);
