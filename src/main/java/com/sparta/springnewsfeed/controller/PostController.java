@@ -4,6 +4,7 @@ import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.dto.AuthUser;
 import com.sparta.springnewsfeed.dto.PostRequestDto;
 import com.sparta.springnewsfeed.dto.PostResponseDto;
+import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +33,9 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
-    @GetMapping("/mypost")
-    public ResponseEntity<List<PostResponseDto>> findMyPosts(@Auth AuthUser authUser) {
-        List<PostResponseDto> responseDtos = postService.findMyPost(authUser.getId());
+    @GetMapping("/myposts")
+    public ResponseEntity<List<PostThumbnailResponseDto>> findMyPosts(@Auth AuthUser authUser) {
+        List<PostThumbnailResponseDto> responseDtos = postService.findMyPosts(authUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 

@@ -56,10 +56,18 @@ public class UserService {
 
     // 비밀번호 수정
     @Transactional
-    public UserPasswordUpdateResponseDto updatePassword(Long userId, UserPasswordUpdateRequestDto requestDto) {
+    public UserPasswordUpdateResponseDto updatePassword(Long authUserId, Long userId, UserPasswordUpdateRequestDto requestDto) {
+        if(!userId.equals(authUserId)){
+            throw new InvalidCredentialsException("권한이 없습니다.");
+        }
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("사용자가 없습니다.")
         );
+        //권한 체크
+        String oldPassword = requestDto.getOldPassword();
+        if(!passwordEncoder.matches(oldPassword,user.getPassword())){
+            throw new InvalidCredentialsException("비밀번호가 일치하지 않습니다.");
+        }
         // 새 비밀번호 업데이트
         String newEncodedPassword = passwordEncoder.encode(requestDto.getNewPassword());
         user.setPassword(newEncodedPassword);
@@ -86,8 +94,11 @@ public class UserService {
 
     // 소개 수정
     @Transactional
-    public UserIntroduceUpdateResponseDto updateIntroduce(Long authId, Long userId, UserIntroduceUpdateRequestDto
+    public UserIntroduceUpdateResponseDto updateIntroduce(Long authUserId, Long userId, UserIntroduceUpdateRequestDto
             requestDto) {
+        if(!userId.equals(authUserId)){
+            throw new InvalidCredentialsException("권한이 없습니다.");
+        }
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("사용자가 없습니다.")
         );
