@@ -14,18 +14,18 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comments")
-    public CommentSaveResponseDto saveComment(@Auth AuthUser authUser, @PathVariable Long postId , @RequestBody CommentSaveRequestDto commentSaveRequestDto){
+    public CommentSaveResponseDto saveComment(@Auth AuthUser authUser, @PathVariable Long postId, @RequestBody CommentSaveRequestDto commentSaveRequestDto) {
         return commentService.saveComment(authUser, postId, commentSaveRequestDto);
     }
 
     @PutMapping("/comments/{commentId}")
-    public CommentUpdateResponseDto updateComment(@Auth AuthUser authUser,@PathVariable Long commentId, @RequestBody CommentUpdateRequstDto commentUpdateRequstDto){
+    public CommentUpdateResponseDto updateComment(@Auth AuthUser authUser, @PathVariable Long commentId, @RequestBody CommentUpdateRequstDto commentUpdateRequstDto) {
         return commentService.updateComment(authUser, commentId, commentUpdateRequstDto);
     }
 
     @DeleteMapping("/comments/{commentId}")
-    public void CommentDelete(@Auth AuthUser authUser, @PathVariable Long commentId){
-        commentService.deleteComment(authUser,commentId);
+    public void CommentDelete(@Auth AuthUser authUser, @PathVariable Long commentId) {
+        commentService.deleteComment(authUser, commentId);
     }
 
 }
