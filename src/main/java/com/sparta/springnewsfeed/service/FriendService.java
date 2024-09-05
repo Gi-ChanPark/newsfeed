@@ -33,41 +33,39 @@ public class FriendService {
 
     @Transactional
     public void friendAddRequest(Long userId, FriendAddRequest friendAddRequest) {
-        User fromUser = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User Not Found"));
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("사용자를 찾지 못했습니다."));
         User toUser = userRepository.findByEmailAndNickname(friendAddRequest.getEmail(), friendAddRequest.getNickname());
 
         if(fromUser.equals(toUser)){
-            log.error("FromUser and ToUser cannot be the same user");
-            throw new IllegalArgumentException("FromUser and ToUser cannot be the same user");
+            log.error("자신에게는 친구 요청을 보내지 못합니다.");
+            throw new IllegalArgumentException("자신에게는 친구 요청을 보내지 못합니다.");
         }
 
         if(friendRepository.existsByToUser(fromUser) && friendRepository.existsByFromUser(toUser)){
             Friend friend = friendRepository.findByFromUserAndToUser(toUser, fromUser);
             if(friend.getStatus().equals(friendAcceptStatus)) {
-                log.error("Already Friend");
-                throw new IllegalArgumentException("Already Friend");
+                log.error("친구입니다");
+                throw new IllegalArgumentException("친구입니다.");
             }else if(friend.getStatus().equals(friendWaitStatus)){
-                log.error("FromUser Send Friend Request");
-                throw new IllegalArgumentException("FromUser Send Friend Request");
+                log.error("요청을 받았습니다.");
+                throw new IllegalArgumentException("요청을 받았습니다.");
             }
         }
 
-
-
         if(toUser == null) {
-            log.error("User Not Found");
-            throw new NullPointerException("User Not Found");
+            log.error("사용자를 찾지 못했습니다.");
+            throw new NullPointerException("사용자를 찾지 못했습니다.");
         }
 
 
         Friend friend2 = friendRepository.findByFromUserAndToUser(fromUser, toUser);
         if(friend2 != null){
             if(friend2.getStatus().equals(friendAcceptStatus)) {
-                log.error("Friend Already");
-                throw new IllegalArgumentException("Friend Already");
+                log.error("친구입니다.");
+                throw new IllegalArgumentException("친구입니다.");
             }else if(friend2.getStatus().equals(friendWaitStatus)){
-                log.error("Friend Request Send");
-                throw new IllegalArgumentException("Friend Request Send");
+                log.error("요청을 보냈습니다.");
+                throw new IllegalArgumentException("요청을 보냈습니다.");
             }
         }
 
@@ -78,12 +76,12 @@ public class FriendService {
     }
 
     public List<FriendRequestListResponse> friendRequestList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User Not Found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("사용자를 찾지 못했습니다."));
         List<Friend> friendList = friendRepository.findAllByToUserAndStatus(user, friendWaitStatus);
 
         if(friendList.isEmpty()){
-            log.error("Friend Request Not Found");
-            throw new NoSuchElementException("Friend Request Not Found");
+            log.error("친구 요청이 없습니다.");
+            throw new NoSuchElementException("친구 요청이 없습니다.");
         }
 
         return friendList.stream().map(friend ->
@@ -91,11 +89,11 @@ public class FriendService {
     }
 
     public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
-        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User Not Found"));
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("사용자를 찾지 못했습니다."));
 
         List<User> searchUser = userRepository.findByNicknameContaining(request.getNickname());
         if(searchUser.isEmpty()) {
-            throw new NoSuchElementException("Nickname Not Found");
+            throw new NoSuchElementException("없는 이름입니다.");
         }
 
         List<UserSearchFriendResponse> responseList = new ArrayList<>();
@@ -105,9 +103,9 @@ public class FriendService {
             response.setNickname(user.getNickname());
 
             if(request.getNickname().equals(user.getNickname())){
-                response.setState("My Profile");
+                response.setState("본인");
             }else {
-                response.setState("Not Friend");
+                response.setState("친구 아님");
             }
 
 
@@ -115,21 +113,21 @@ public class FriendService {
             if(friend != null) {
 
                 if(friend.getStatus().equals(friendAcceptStatus)) {
-                    response.setState("Friend");
+                    response.setState("친구");
                 }else if(friend.getStatus().equals(friendWaitStatus)) {
-                    response.setState("Send Request");
+                    response.setState("요청 보냄");
                 }else {
-                    response.setState("Not Friend");
+                    response.setState("친구 아님");
                 }
             } else {
                 friend = friendRepository.findByFromUserAndToUser(user, fromUser);
                 if(friend != null){
                     if(friend.getStatus().equals(friendAcceptStatus)){
-                        response.setState("Friend");
+                        response.setState("친구");
                     }else if(friend.getStatus().equals(friendWaitStatus)){
-                        response.setState("Get Request");
+                        response.setState("요청 받음");
                     }else {
-                        response.setState("Not Friend");
+                        response.setState("친구 아님");
                     }
                 }
             }
@@ -142,16 +140,16 @@ public class FriendService {
 
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
-        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("Friend Not Found"));
+        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("사용자를 찾지 못했습니다."));
 
         if(!friend.getFromUser().getId().equals(userId) && !friend.getToUser().getId().equals(userId)){
-            log.error("Not Friend User");
-            throw new IllegalArgumentException("Not Friend User");
+            log.error("친구가 아닙니다.");
+            throw new IllegalArgumentException("친구가 아닙니다.");
         }
 
         if(friend.getStatus().equals(friendWaitStatus) || !friend.getStatus().equals(friendAcceptStatus)){
-            log.error("Not Friend");
-            throw new IllegalArgumentException("Not Friend");
+            log.error("친구가 아닙니다.");
+            throw new IllegalArgumentException("친구가 아닙니다.");
         }
 
         friendRepository.delete(friend);
@@ -159,11 +157,11 @@ public class FriendService {
 
     @Transactional
     public String friendAcceptanceRejection(Long userId, Long friendId, FriendRequestStatus status) {
-        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("Friend Not Found"));
+        Friend friend = friendRepository.findById(friendId).orElseThrow(() -> new NoSuchElementException("사용자를 찾지 못했습니다."));
 
         if(!friend.getToUser().getId().equals(userId)){
-            log.error("Not ToUser");
-            throw new IllegalArgumentException("Not ToUser");
+            log.error("받은 요청이 없습니다.");
+            throw new IllegalArgumentException("받은 요청이 없습니다.");
         }
 
             if (status.getStatus().equals(friendAcceptStatus)) {
@@ -175,7 +173,7 @@ public class FriendService {
                 return "친구 요청 거절";
             }
 
-            log.error("Invalid Friend Request Status");
-            throw new IllegalArgumentException("Invalid Friend Request Status");
+            log.error("잘못된 친구 요청입니다.");
+            throw new IllegalArgumentException("잘못된 친구 요청입니다.");
     }
 }
