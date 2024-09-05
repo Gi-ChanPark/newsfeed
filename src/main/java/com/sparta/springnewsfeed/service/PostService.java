@@ -88,12 +88,16 @@ public class PostService {
         return postResponseDtos;
     }
 
+
     public Page<PostThumbnailResponseDto> getNewsfeed(Long userId, int page) {
-        List<Long> friendIds = friendRepository.findFriends(String.valueOf(FriendStatus.ACCEPTED), userId);
-
+        List<User> friends = friendRepository.findFriends(FriendStatus.ACCEPTED, userId);
         Pageable pageable = PageRequest.of(page, 10);
+        if(friends.isEmpty()){
+            Page<Post> newsfeeds = postRepository.findAllByOrderByUpdatedAtDesc(pageable);
+            return newsfeeds.map(PostThumbnailResponseDto::new);
+        }
 
-        Page<Post> newfeeds = postRepository.findPostsByIds(friendIds, pageable);
-        return newfeeds.map(PostThumbnailResponseDto::new);
+        Page<Post> newsfeeds = postRepository.findPostsByUsers(friends, pageable);
+        return newsfeeds.map(PostThumbnailResponseDto::new);
     }
 }

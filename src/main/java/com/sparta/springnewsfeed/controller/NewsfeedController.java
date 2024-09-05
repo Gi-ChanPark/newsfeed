@@ -2,7 +2,6 @@ package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.dto.AuthUser;
-import com.sparta.springnewsfeed.dto.PostResponseDto;
 import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.service.PostService;
 import org.springframework.data.domain.Page;
@@ -12,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/newsfeed")
@@ -23,8 +24,9 @@ public class NewsfeedController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<PostThumbnailResponseDto>> getNewsfeed(@Auth AuthUser authUser, @RequestParam(name = "page") int page) {
+    public ResponseEntity<List<PostThumbnailResponseDto>> getNewsfeed(@Auth AuthUser authUser, @RequestParam(name = "page") int page) {
         Page<PostThumbnailResponseDto> newsfeeds = postService.getNewsfeed(authUser.getId(), page);
-        return ResponseEntity.status(HttpStatus.OK).body(newsfeeds);
+
+        return ResponseEntity.status(HttpStatus.OK).body(newsfeeds.getContent());
     }
 }

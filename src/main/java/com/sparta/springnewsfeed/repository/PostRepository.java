@@ -1,6 +1,7 @@
 package com.sparta.springnewsfeed.repository;
 
 import com.sparta.springnewsfeed.entity.Post;
+import com.sparta.springnewsfeed.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,7 +17,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Long findUserIdById(Long postId);
 
     @Query(value = "select p from Post p " +
-            "where p.id IN :ids " +
+            "where p.user IN :friends " +
             "order by p.updatedAt desc ")
-    Page<Post> findPostsByIds(@Param("ids") List<Long> friendIds, Pageable pageable);
+    Page<Post> findPostsByUsers(@Param("friends") List<User> friends, Pageable pageable);
+
+    Page<Post> findAllByOrderByUpdatedAtDesc(Pageable pageable);
 }
