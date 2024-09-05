@@ -23,7 +23,7 @@ public class NewsfeedController {
 
     @GetMapping()
     public ResponseEntity<Page<PostResponseDto>> getNewsfeed(@Auth AuthUser authUser, @RequestParam(name = "page") int page) {
-        Page<PostResponseDto> newsfeeds = postService.getNewsfeed(authUser.getId(), page);
+        Page<PostResponseDto> newsfeeds = postService.getNewsfeed(authUser.id(), page);
         return ResponseEntity.status(HttpStatus.OK).body(newsfeeds);
     }
 }
