@@ -22,7 +22,7 @@ public class PostController {
 
     @PostMapping
     public ResponseEntity<PostResponseDto> createPost(@Auth AuthUser authUser, @RequestBody PostRequestDto requestDto) {
-        PostResponseDto responseDto = postService.createPost(requestDto, authUser.id());
+        PostResponseDto responseDto = postService.createPost(requestDto, authUser.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -34,19 +34,19 @@ public class PostController {
 
     @GetMapping("/mypost")
     public ResponseEntity<List<PostResponseDto>> findMyPosts(@Auth AuthUser authUser) {
-        List<PostResponseDto> responseDtos = postService.findMyPost(authUser.id());
+        List<PostResponseDto> responseDtos = postService.findMyPost(authUser.getId());
         return ResponseEntity.status(HttpStatus.OK).body(responseDtos);
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<PostResponseDto> updatePost(@Auth AuthUser authUser, @PathVariable Long postId, @RequestBody PostRequestDto requestDto) {
-        PostResponseDto responseDto = postService.updateById(postId, requestDto, authUser.id());
+        PostResponseDto responseDto = postService.updateById(postId, requestDto, authUser.getId());
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDto);
     }
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@Auth AuthUser authUser, @PathVariable Long postId) {
-        postService.deleteById(postId, authUser.id());
+        postService.deleteById(postId, authUser.getId());
         StringBuilder message = new StringBuilder();
         message.append("ID : ").append(postId).append(" 게시물 삭제 완료");
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(message.toString());
