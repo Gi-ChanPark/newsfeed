@@ -5,6 +5,7 @@ import com.sparta.springnewsfeed.FriendStatus;
 import com.sparta.springnewsfeed.entity.Friend;
 import com.sparta.springnewsfeed.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
