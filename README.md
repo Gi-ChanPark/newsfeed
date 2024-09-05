@@ -1,4 +1,5 @@
 ### 와이어 프레임
+Figma : https://www.figma.com/board/HS4bog2O5K3WjJiHD8KDDj/Untitled?node-id=0-1&node-type=CANVAS&t=LLbgHBEi3EYcQkIc-0
 ![1b5ce1e9-0acf-41d8-9103-863f14db12c9_1](https://github.com/user-attachments/assets/19ee2dfd-4d77-449a-9021-a9cc71b7190f)
 
 ### ERD DIAGRAM
