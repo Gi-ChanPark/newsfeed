@@ -1,5 +1,6 @@
 package com.sparta.springnewsfeed.controller;
 
+import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.dto.*;
 import com.sparta.springnewsfeed.entity.User;
@@ -37,36 +38,36 @@ public class UserController {
 
     // 비밀번호 수정
     @PutMapping("/users/{userId}")
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@RequestHeader("Authorization") String token,
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@Auth User user,
                                                                         @PathVariable Long userId,
                                                                         @RequestBody UserPasswordUpdateRequestDto requestDto) {
-        UserPasswordUpdateResponseDto responseDto = userService.updatePassword(token, requestDto);
+        UserPasswordUpdateResponseDto responseDto = userService.updatePassword(user, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     // 유저 조회
     @GetMapping("/users")
-    public ResponseEntity<UserRequestDto> getUser(@RequestHeader("Authorization") String token) {
-        UserRequestDto responseDto = userService.getUser(token);
+    public ResponseEntity<UserRequestDto> getUser(@Auth User user) {
+        UserRequestDto responseDto = userService.getUser(user);
         return ResponseEntity.ok(responseDto);
 
     }
 
     // 소개 수정
     @PutMapping("/users/{userId}/profile")
-    public ResponseEntity<UserIntroduceUpdateResponseDto> updateIntroduce(@RequestHeader("Authorization") String token,
+    public ResponseEntity<UserIntroduceUpdateResponseDto> updateIntroduce(@Auth User user,
                                                                           @PathVariable Long userId,
                                                                           @RequestBody UserIntroduceUpdateRequestDto requestDto) {
-        UserIntroduceUpdateResponseDto responseDto = userService.updateIntroduce(token, userId, requestDto);
+        UserIntroduceUpdateResponseDto responseDto = userService.updateIntroduce(user, userId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     // 회원 탈퇴
     @DeleteMapping("/users/{userId}")
-    public ResponseEntity<String> deleteUser(@RequestHeader("Authorization") String token,
+    public ResponseEntity<String> deleteUser(@Auth User user,
                                              @PathVariable Long userId,
                                              @RequestParam String enteredPassword) {
-        userService.deleteUser(token, userId, enteredPassword);
+        userService.deleteUser(user, userId, enteredPassword);
         return ResponseEntity.ok("회원 탈퇴가 완료되었습니다.");
     }
 
