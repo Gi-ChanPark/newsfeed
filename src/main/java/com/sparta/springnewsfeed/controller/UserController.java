@@ -2,20 +2,16 @@ package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.dto.*;
-import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import com.sparta.springnewsfeed.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class UserController {
+public class    UserController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
