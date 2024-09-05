@@ -3,15 +3,11 @@ package com.sparta.springnewsfeed.controller;
 import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.dto.*;
-import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import com.sparta.springnewsfeed.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +38,7 @@ public class UserController {
     public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(@Auth AuthUser user,
                                                                         @PathVariable Long userId,
                                                                         @RequestBody UserPasswordUpdateRequestDto requestDto) {
-        UserPasswordUpdateResponseDto responseDto = userService.updatePassword(user.getId(), requestDto);
+        UserPasswordUpdateResponseDto responseDto = userService.updatePassword(user.getId(), userId,requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
