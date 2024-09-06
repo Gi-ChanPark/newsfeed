@@ -1,6 +1,6 @@
 package com.sparta.springnewsfeed.service;
 
-import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.AuthUser;
 import com.sparta.springnewsfeed.dto.comment.request.CommentSaveRequestDto;
 import com.sparta.springnewsfeed.dto.comment.request.CommentUpdateRequstDto;
 import com.sparta.springnewsfeed.dto.comment.response.CommentSaveResponseDto;
@@ -17,6 +17,8 @@ import com.sparta.springnewsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -58,5 +60,11 @@ public class CommentService {
             throw new NoEntityException(ErrorCode.COMMENT_NOT_FOUND);
         }
         commentRepository.deleteById(commentId);
+    }
+
+    public List<CommentSaveResponseDto> findAllComment(Long postId) {
+        List<Comment> commentList = commentRepository.findAllByPostId(postId);
+        List<CommentSaveResponseDto> commentSaveResponseDtoList = commentList.stream().map(CommentSaveResponseDto::new).toList();
+        return commentSaveResponseDtoList;
     }
 }
