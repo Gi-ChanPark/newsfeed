@@ -100,6 +100,12 @@ public class PostService {
         }
 
         Page<Post> newsfeeds = postRepository.findPostsByUsers(friends, pageable);
+        Page<Post> newPosts = postRepository.findAllByUserIdNotOrderByUpdatedAtDesc(userId,pageable);
+
+        List<Post> mergePage = new ArrayList<>();
+        mergePage.addAll(newsfeeds.getContent());
+        mergePage.addAll(newPosts.getContent());
+
         return newsfeeds.map(PostThumbnailResponseDto::new);
     }
 }
