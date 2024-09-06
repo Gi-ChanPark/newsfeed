@@ -1,9 +1,9 @@
 package com.sparta.springnewsfeed.service;
 
 import com.sparta.springnewsfeed.FriendStatus;
-import com.sparta.springnewsfeed.dto.PostRequestDto;
-import com.sparta.springnewsfeed.dto.PostResponseDto;
-import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
+import com.sparta.springnewsfeed.dto.post.request.PostRequestDto;
+import com.sparta.springnewsfeed.dto.post.response.PostResponseDto;
+import com.sparta.springnewsfeed.dto.post.response.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.exception.ErrorCode;

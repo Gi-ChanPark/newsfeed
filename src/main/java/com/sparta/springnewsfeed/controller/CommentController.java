@@ -2,6 +2,10 @@ package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.comment.request.CommentSaveRequestDto;
+import com.sparta.springnewsfeed.dto.comment.request.CommentUpdateRequstDto;
+import com.sparta.springnewsfeed.dto.comment.response.CommentSaveResponseDto;
+import com.sparta.springnewsfeed.dto.comment.response.CommentUpdateResponseDto;
 import com.sparta.springnewsfeed.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

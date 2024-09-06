@@ -2,7 +2,11 @@ package com.sparta.springnewsfeed.service;
 
 import com.sparta.springnewsfeed.config.JwtUtil;
 import com.sparta.springnewsfeed.config.PasswordEncoder;
-import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.user.request.*;
+import com.sparta.springnewsfeed.dto.user.response.UserIntroduceUpdateResponseDto;
+import com.sparta.springnewsfeed.dto.user.response.UserLoginResponseDto;
+import com.sparta.springnewsfeed.dto.user.response.UserPasswordUpdateResponseDto;
+import com.sparta.springnewsfeed.dto.user.response.UserSignupResponseDto;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.exception.ErrorCode;
 import com.sparta.springnewsfeed.exception.custom.AlreadyExistException;

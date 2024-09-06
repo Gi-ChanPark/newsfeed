@@ -1,4 +1,4 @@
-package com.sparta.springnewsfeed.dto;
+package com.sparta.springnewsfeed.dto.post.response;
 
 import com.sparta.springnewsfeed.entity.Post;
 import lombok.Getter;

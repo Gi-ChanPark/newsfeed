@@ -1,4 +1,4 @@
-package com.sparta.springnewsfeed.dto;
+package com.sparta.springnewsfeed.dto.comment.request;
 
 import lombok.Getter;
 

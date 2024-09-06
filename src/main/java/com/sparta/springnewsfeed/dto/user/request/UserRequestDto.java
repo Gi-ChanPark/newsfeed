@@ -1,9 +1,9 @@
-package com.sparta.springnewsfeed.dto;
+package com.sparta.springnewsfeed.dto.user.request;
 
 import lombok.Getter;
 
 @Getter
-public class UserResponseDto {
+public class UserRequestDto {
 
     private Long id;
     private String email;
@@ -12,7 +12,7 @@ public class UserResponseDto {
     private String updatedAt;
     private String introduce;
 
-    public UserResponseDto(Long id, String email, String nickname, String createdAt, String updatedAt, String introduce) {
+    public UserRequestDto(Long id, String email, String nickname, String createdAt, String updatedAt, String introduce) {
         this.id = id;
         this.email = email;
         this.nickname = nickname;

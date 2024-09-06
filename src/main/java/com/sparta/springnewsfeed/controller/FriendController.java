@@ -3,6 +3,11 @@ package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.friend.request.FriendAddRequest;
+import com.sparta.springnewsfeed.dto.friend.request.FriendRequestListResponse;
+import com.sparta.springnewsfeed.dto.friend.request.FriendRequestStatus;
+import com.sparta.springnewsfeed.dto.user.request.UserSearchFriendRequest;
+import com.sparta.springnewsfeed.dto.user.response.UserSearchFriendResponse;
 import com.sparta.springnewsfeed.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

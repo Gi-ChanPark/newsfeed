@@ -2,7 +2,7 @@ package com.sparta.springnewsfeed.controller;
 
 import com.sparta.springnewsfeed.annotation.Auth;
 import com.sparta.springnewsfeed.dto.AuthUser;
-import com.sparta.springnewsfeed.dto.PostThumbnailResponseDto;
+import com.sparta.springnewsfeed.dto.post.response.PostThumbnailResponseDto;
 import com.sparta.springnewsfeed.service.PostService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

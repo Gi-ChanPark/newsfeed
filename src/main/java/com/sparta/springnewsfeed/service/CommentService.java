@@ -1,6 +1,10 @@
 package com.sparta.springnewsfeed.service;
 
 import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.comment.request.CommentSaveRequestDto;
+import com.sparta.springnewsfeed.dto.comment.request.CommentUpdateRequstDto;
+import com.sparta.springnewsfeed.dto.comment.response.CommentSaveResponseDto;
+import com.sparta.springnewsfeed.dto.comment.response.CommentUpdateResponseDto;
 import com.sparta.springnewsfeed.entity.Comment;
 import com.sparta.springnewsfeed.entity.Post;
 import com.sparta.springnewsfeed.entity.User;

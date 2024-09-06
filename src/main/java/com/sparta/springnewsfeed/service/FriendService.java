@@ -2,7 +2,11 @@ package com.sparta.springnewsfeed.service;
 
 
 import com.sparta.springnewsfeed.FriendStatus;
-import com.sparta.springnewsfeed.dto.*;
+import com.sparta.springnewsfeed.dto.friend.request.FriendAddRequest;
+import com.sparta.springnewsfeed.dto.friend.request.FriendRequestListResponse;
+import com.sparta.springnewsfeed.dto.friend.request.FriendRequestStatus;
+import com.sparta.springnewsfeed.dto.user.request.UserSearchFriendRequest;
+import com.sparta.springnewsfeed.dto.user.response.UserSearchFriendResponse;
 import com.sparta.springnewsfeed.entity.Friend;
 import com.sparta.springnewsfeed.entity.User;
 import com.sparta.springnewsfeed.repository.FriendRepository;

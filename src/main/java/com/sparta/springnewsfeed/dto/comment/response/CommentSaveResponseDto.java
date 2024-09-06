@@ -1,5 +1,6 @@
-package com.sparta.springnewsfeed.dto;
+package com.sparta.springnewsfeed.dto.comment.response;
 
+import com.sparta.springnewsfeed.dto.AuthUser;
 import lombok.Getter;
 
 @Getter
