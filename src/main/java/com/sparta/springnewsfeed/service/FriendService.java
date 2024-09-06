@@ -9,6 +9,8 @@ import com.sparta.springnewsfeed.dto.user.request.UserSearchFriendRequest;
 import com.sparta.springnewsfeed.dto.user.response.UserSearchFriendResponse;
 import com.sparta.springnewsfeed.entity.Friend;
 import com.sparta.springnewsfeed.entity.User;
+import com.sparta.springnewsfeed.exception.ErrorCode;
+import com.sparta.springnewsfeed.exception.custom.NoEntityException;
 import com.sparta.springnewsfeed.repository.FriendRepository;
 import com.sparta.springnewsfeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +39,7 @@ public class FriendService {
 
     @Transactional
     public void friendAddRequest(Long userId, FriendAddRequest friendAddRequest) {
-        User fromUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾지 못했습니다."));
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new NoEntityException(ErrorCode.USER_NOT_FOUND));
         User toUser = userRepository.findByEmailAndNickname(friendAddRequest.getEmail(), friendAddRequest.getNickname());
 
         if (fromUser.equals(toUser)) {
@@ -58,7 +60,7 @@ public class FriendService {
 
         if (toUser == null) {
             log.error("사용자를 찾지 못했습니다.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾지 못했습니다.");
+            throw new NoEntityException(ErrorCode.USER_NOT_FOUND);
         }
 
 
@@ -80,12 +82,12 @@ public class FriendService {
     }
 
     public List<FriendRequestListResponse> friendRequestList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾지 못했습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoEntityException(ErrorCode.USER_NOT_FOUND));
         List<Friend> friendList = friendRepository.findAllByToUserAndStatus(user, friendWaitStatus);
 
         if (friendList.isEmpty()) {
             log.error("친구 요청이 없습니다.");
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "친구 요청이 없습니다.");
+            throw new NoEntityException(ErrorCode.FRIEND_REQUEST_NOT_FOUND);
         }
 
         return friendList.stream().map(friend ->
@@ -93,7 +95,7 @@ public class FriendService {
     }
 
     public List<UserSearchFriendResponse> userSearchFriend(Long userId, UserSearchFriendRequest request) {
-        User fromUser = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾지 못했습니다."));
+        User fromUser = userRepository.findById(userId).orElseThrow(() -> new NoEntityException(ErrorCode.USER_NOT_FOUND));
 
         List<User> searchUser = userRepository.findByNicknameContaining(request.getNickname());
         if (searchUser.isEmpty()) {

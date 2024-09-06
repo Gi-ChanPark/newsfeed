@@ -12,8 +12,10 @@ public enum ErrorCode {
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "게시물이 존재하지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저가 존재하지 않습니다." ),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "댓글이 없습니다."),
+    FRIEND_REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND,"친구 요청이 없습니다." ),
     USER_NOT_MATCH(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
     INVALID_EMAIL_PASSWORD(HttpStatus.UNAUTHORIZED,"잘못된 이메일이나 비밀번호 입니다." );
+
 
 
     private HttpStatus httpStatus;
